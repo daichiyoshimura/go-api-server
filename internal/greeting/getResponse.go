@@ -1,6 +1,5 @@
 package greeting
 
-
-type GetOneResponse struct {
+type GetResponse struct {
 	Message string
 }

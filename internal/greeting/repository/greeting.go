@@ -1,16 +1,14 @@
 package repository
 
 import (
+	"context"
+	"trygobun/internal/greeting/model"
+
 	"github.com/uptrace/bun"
 )
 
 type GreetingRepository struct {
 	conn bun.IDB
-}
-
-// Find implements getOneService.IGreetingRepository.
-func (*GreetingRepository) Find() {
-	panic("unimplemented")
 }
 
 func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
@@ -19,8 +17,13 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 	}
 }
 
-type GreetingGetOneInput struct{}
+type GreetingFindInput struct{}
 
-func (r *GreetingRepository) GetOne(in GreetingGetOneInput) *GreetingModel {
-	return &GreetingModel{}
+func (r *GreetingRepository) Find(ctx context.Context, id uint) (*[]model.Greeting, error) {
+	query := "SELECT id,message FROM greetings WHERE id = ?"
+	greetings := make([]model.Greeting, 0)
+	if err := r.conn.NewRaw(query, greetings, id).Scan(ctx, greetings); err != nil {
+		return nil, err
+	}
+	return &greetings, nil
 }

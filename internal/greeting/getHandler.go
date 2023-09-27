@@ -3,27 +3,28 @@ package greeting
 import (
 	"net/http"
 	"trygobun/internal/db"
-	"trygobun/internal/greeting/getOneService"
+	"trygobun/internal/greeting/getService"
 	"trygobun/internal/greeting/repository"
 
 	"github.com/labstack/echo/v4"
 )
 
-func GetOneHandler(ctx echo.Context) error {
+func GetHandler(ctx echo.Context) error {
 
 	conn, err := db.Establish()
 	if err != nil {
 		return err
 	}
 	repo := repository.NewGreetingRepository(conn)
-
-	srv := getOneService.NewGreetingService(repo)
-	output, err := srv.GetOne(&getOneService.Input{})
+	srv := getService.NewService(repo)
+	output, err := srv.Get(ctx, &getService.Input{
+		ID: 1,
+	})
 	if err != nil {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, &GetOneResponse{
+	return ctx.JSON(http.StatusOK, &GetResponse{
 		Message: output.Message,
 	})
 }

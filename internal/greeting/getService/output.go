@@ -1,4 +1,4 @@
-package getOneService
+package getService
 
 type Output struct {
 	Message string

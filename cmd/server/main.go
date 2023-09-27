@@ -6,8 +6,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func main(){
+func main() {
 	e := echo.New()
-	e.GET("/", greeting.GetOneHandler)
-    e.Logger.Fatal(e.Start(":80"))
+	e.GET("/", greeting.GetHandler)
+	e.Logger.Fatal(e.Start(":80"))
 }
