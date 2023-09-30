@@ -9,7 +9,13 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Establish() (*bun.DB, error) {
+type Connection struct {}
+
+func NewConnection() *Connection{
+	return &Connection{}
+}
+
+func (c *Connection) Establish() (*bun.DB, error) {
 	conn, err := sql.Open("mysql", "root:root@tcp([127.0.0.1]:3306)/sample_db?charset=utf8mb4&parseTime=true")
 	if err != nil {
 		return nil, err
