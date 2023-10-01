@@ -22,7 +22,6 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	
-	e.GET("/", greeting.GetHandlerFunc(dbconn))
+	e.GET("/", greeting.GetHandlerFunc(db.NewGreetingRepository(dbconn)))
 	e.Logger.Fatal(e.Start(srvEnv.Host()))
 }

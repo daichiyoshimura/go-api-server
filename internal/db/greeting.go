@@ -1,4 +1,4 @@
-package repository
+package db
 
 import (
 	"context"
@@ -16,8 +16,6 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 		conn: conn,
 	}
 }
-
-type GreetingFindInput struct{}
 
 func (r *GreetingRepository) Find(ctx context.Context, id uint) (*[]model.Greeting, error) {
 	query := "SELECT id,message FROM greetings WHERE id = ?"
