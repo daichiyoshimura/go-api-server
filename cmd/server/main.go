@@ -10,17 +10,19 @@ import (
 
 func main() {
 
+	e := echo.New()
+
 	srvEnv, dbEnv, err := env.NewReader().Read()
 	if err != nil {
-		panic(err)
+		e.Logger.Fatal(err)
 	}
 
 	dbconn, err := db.NewConnection().Establish(dbEnv)
 	if err != nil {
-		panic(err)
+		e.Logger.Fatal(err)
 	}
 
-	e := echo.New()
+	
 	e.GET("/", greeting.GetHandlerFunc(dbconn))
 	e.Logger.Fatal(e.Start(srvEnv.Host()))
 }
