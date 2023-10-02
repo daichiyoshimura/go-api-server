@@ -17,5 +17,7 @@ func NewService(repo IGreetingRepository) *Service {
 func (s *Service) Get(ctx context.Context, in *Input) (*Output, error) {
 	s.repo.Find(ctx, in.ID)
 
-	return nil, nil
+	return &Output{
+		Message: "OK",
+	}, nil
 }
