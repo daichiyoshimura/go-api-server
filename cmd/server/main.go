@@ -9,9 +9,7 @@ import (
 )
 
 func main() {
-
 	e := echo.New()
-
 	srvEnv, dbEnv, err := env.NewReader().Read()
 	if err != nil {
 		e.Logger.Fatal(err)
