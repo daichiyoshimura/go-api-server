@@ -18,7 +18,15 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 }
 
 func (r *GreetingRepository) Find(ctx context.Context, id uint) (*[]model.Greeting, error) {
-	query := "SELECT id,message FROM greetings WHERE id = ?"
+	query := `
+	SELECT 
+		id,
+		message
+	FROM 
+		greetings
+	WHERE 
+		id = ?
+	`
 	greetings := make([]model.Greeting, 0)
 	if err := r.conn.NewRaw(query, greetings, id).Scan(ctx, greetings); err != nil {
 		return nil, err
