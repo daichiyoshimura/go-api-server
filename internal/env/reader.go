@@ -1,7 +1,6 @@
 package env
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -43,7 +42,7 @@ func (r *Reader) Read() (*Server, *DB, error) {
 func (r *Reader) read(key string) (string, error) {
 	val := os.Getenv(key)
 	if len(val) == 0 {
-		return val, errors.New(fmt.Sprintf(errMsgEmpty, key))
+		return val, fmt.Errorf(errMsgEmpty, key)
 	}
 	return val, nil
 }

@@ -1,8 +1,7 @@
 package env
 
 const (
-	stageDev  = "DEV"
-	stageTest = "TEST"
+	stageDev = "DEV"
 )
 
 type Stage struct {
@@ -17,8 +16,4 @@ func NewStage(stg string) *Stage {
 
 func (s *Stage) isDev() bool {
 	return s.stg == stageDev
-}
-
-func (s *Stage) isTest() bool {
-	return s.stg == stageTest
 }
