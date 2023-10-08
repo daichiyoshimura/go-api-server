@@ -1,7 +1,15 @@
 package getService
 
 type Input struct {
-	ID uint
+	id uint
 }
 
+func NewInput(id uint) *Input {
+	return &Input{
+		id: id,
+	}
+}
 
+func (i *Input) ID() uint {
+	return i.id
+}
