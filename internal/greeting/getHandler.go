@@ -16,7 +16,7 @@ type GetResponse struct {
 
 func GetHandlerFunc(repo getService.IGreetingRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		
+
 		var req GetRequest
 		if err := ctx.Bind(&req); err != nil {
 			return err
