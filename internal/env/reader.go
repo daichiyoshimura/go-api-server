@@ -20,7 +20,7 @@ func NewReader() *Reader {
 
 func (r *Reader) Read() (*Server, *DB, error) {
 
-	stg := NewStage()
+	stg := NewStage(os.Getenv("STAGE"))
 	if stg.isDev() {
 		if err := godotenv.Load(".env"); err != nil {
 			return nil, nil, err

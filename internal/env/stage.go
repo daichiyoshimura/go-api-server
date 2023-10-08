@@ -1,7 +1,5 @@
 package env
 
-import "os"
-
 const (
 	stageDev  = "DEV"
 	stageTest = "TEST"
@@ -11,9 +9,9 @@ type Stage struct {
 	stg string
 }
 
-func NewStage() *Stage {
+func NewStage(stg string) *Stage {
 	return &Stage{
-		stg: os.Getenv("STAGE"),
+		stg: stg,
 	}
 }
 
