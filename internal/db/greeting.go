@@ -17,7 +17,7 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 	}
 }
 
-func (r *GreetingRepository) Find(ctx context.Context, id uint) (*model.Greeting, error) {
+func (r *GreetingRepository) Find(ctx context.Context, in model.GreetingFindInput) (*model.Greeting, error) {
 	query := `
 	SELECT 
 		id,
@@ -28,7 +28,7 @@ func (r *GreetingRepository) Find(ctx context.Context, id uint) (*model.Greeting
 		id = ?
 	`
 	greetings := make([]model.Greeting, 1)
-	if err := r.conn.NewRaw(query, greetings, id).Scan(ctx, greetings); err != nil {
+	if err := r.conn.NewRaw(query, greetings, in.ID).Scan(ctx, greetings); err != nil {
 		return nil, err
 	}
 	return &greetings[0], nil

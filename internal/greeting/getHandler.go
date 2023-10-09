@@ -8,7 +8,7 @@ import (
 )
 
 type GetRequest struct {
-	ID uint `param:"id"`
+	ID int `param:"id"`
 }
 type GetResponse struct {
 	Message string `json:"message"`
@@ -22,13 +22,13 @@ func GetHandlerFunc(repo getService.IGreetingRepository) echo.HandlerFunc {
 			return err
 		}
 
-		output, err := getService.NewService(repo).Get(ctx.Request().Context(), getService.NewInput(1))
+		out, err := getService.NewService(repo).Get(ctx.Request().Context(), getService.NewInput(req.ID))
 		if err != nil {
 			return err
 		}
 
 		return ctx.JSON(http.StatusOK, &GetResponse{
-			Message: output.Message(),
+			Message: out.Message(),
 		})
 	}
 }

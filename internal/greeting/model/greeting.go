@@ -13,3 +13,7 @@ type Greeting struct {
 	CreatedAt     time.Time `bun:",nullzero,default:current_timestamp"`
 	UpdatedAt     time.Time `bun:",nullzero,default:current_timestamp"`
 }
+
+type GreetingFindInput struct {
+	ID int
+}
