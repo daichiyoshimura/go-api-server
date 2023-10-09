@@ -57,41 +57,6 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   /account:
-    get:
-      summary: Returns account by id
-      operationId: accountGet
-      parameters:
-        - name: tags
-          in: query
-          description: tags to filter by
-          required: false
-          style: form
-          schema:
-            type: array
-            items:
-              type: string
-        - name: limit
-          in: query
-          description: maximum number of results to return
-          required: false
-          schema:
-            type: integer
-            format: int32
-      responses:
-        "200":
-          description: Account response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Account"
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
     post:
       summary: Creates a new account
       description: Creates a new account in the store. Duplicates are not allowed
@@ -142,7 +107,7 @@ components:
       properties:
         code:
           type: integer
-          format: int32
+          format: int64
           description: Error code
         message:
           type: string

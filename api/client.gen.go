@@ -89,9 +89,6 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// AccountGet request
-	AccountGet(ctx context.Context, params *AccountGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
-
 	// AddAccountWithBody request with any body
 	AddAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -102,18 +99,6 @@ type ClientInterface interface {
 
 	// AccountIdPut request
 	AccountIdPut(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
-}
-
-func (c *Client) AccountGet(ctx context.Context, params *AccountGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAccountGetRequest(c.Server, params)
-	if err != nil {
-		return nil, err
-	}
-	req = req.WithContext(ctx)
-	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
-		return nil, err
-	}
-	return c.Client.Do(req)
 }
 
 func (c *Client) AddAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -162,71 +147,6 @@ func (c *Client) AccountIdPut(ctx context.Context, id int64, reqEditors ...Reque
 		return nil, err
 	}
 	return c.Client.Do(req)
-}
-
-// NewAccountGetRequest generates requests for AccountGet
-func NewAccountGetRequest(server string, params *AccountGetParams) (*http.Request, error) {
-	var err error
-
-	serverURL, err := url.Parse(server)
-	if err != nil {
-		return nil, err
-	}
-
-	operationPath := fmt.Sprintf("/account")
-	if operationPath[0] == '/' {
-		operationPath = "." + operationPath
-	}
-
-	queryURL, err := serverURL.Parse(operationPath)
-	if err != nil {
-		return nil, err
-	}
-
-	if params != nil {
-		queryValues := queryURL.Query()
-
-		if params.Tags != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "tags", runtime.ParamLocationQuery, *params.Tags); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		if params.Limit != nil {
-
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
-				return nil, err
-			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
-				return nil, err
-			} else {
-				for k, v := range parsed {
-					for _, v2 := range v {
-						queryValues.Add(k, v2)
-					}
-				}
-			}
-
-		}
-
-		queryURL.RawQuery = queryValues.Encode()
-	}
-
-	req, err := http.NewRequest("GET", queryURL.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
 }
 
 // NewAddAccountRequest calls the generic AddAccount builder with application/json body
@@ -380,9 +300,6 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// AccountGetWithResponse request
-	AccountGetWithResponse(ctx context.Context, params *AccountGetParams, reqEditors ...RequestEditorFn) (*AccountGetResponse, error)
-
 	// AddAccountWithBodyWithResponse request with any body
 	AddAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAccountResponse, error)
 
@@ -393,29 +310,6 @@ type ClientWithResponsesInterface interface {
 
 	// AccountIdPutWithResponse request
 	AccountIdPutWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*AccountIdPutResponse, error)
-}
-
-type AccountGetResponse struct {
-	Body         []byte
-	HTTPResponse *http.Response
-	JSON200      *[]Account
-	JSONDefault  *Error
-}
-
-// Status returns HTTPResponse.Status
-func (r AccountGetResponse) Status() string {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.Status
-	}
-	return http.StatusText(0)
-}
-
-// StatusCode returns HTTPResponse.StatusCode
-func (r AccountGetResponse) StatusCode() int {
-	if r.HTTPResponse != nil {
-		return r.HTTPResponse.StatusCode
-	}
-	return 0
 }
 
 type AddAccountResponse struct {
@@ -487,15 +381,6 @@ func (r AccountIdPutResponse) StatusCode() int {
 	return 0
 }
 
-// AccountGetWithResponse request returning *AccountGetResponse
-func (c *ClientWithResponses) AccountGetWithResponse(ctx context.Context, params *AccountGetParams, reqEditors ...RequestEditorFn) (*AccountGetResponse, error) {
-	rsp, err := c.AccountGet(ctx, params, reqEditors...)
-	if err != nil {
-		return nil, err
-	}
-	return ParseAccountGetResponse(rsp)
-}
-
 // AddAccountWithBodyWithResponse request with arbitrary body returning *AddAccountResponse
 func (c *ClientWithResponses) AddAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAccountResponse, error) {
 	rsp, err := c.AddAccountWithBody(ctx, contentType, body, reqEditors...)
@@ -529,39 +414,6 @@ func (c *ClientWithResponses) AccountIdPutWithResponse(ctx context.Context, id i
 		return nil, err
 	}
 	return ParseAccountIdPutResponse(rsp)
-}
-
-// ParseAccountGetResponse parses an HTTP response from a AccountGetWithResponse call
-func ParseAccountGetResponse(rsp *http.Response) (*AccountGetResponse, error) {
-	bodyBytes, err := io.ReadAll(rsp.Body)
-	defer func() { _ = rsp.Body.Close() }()
-	if err != nil {
-		return nil, err
-	}
-
-	response := &AccountGetResponse{
-		Body:         bodyBytes,
-		HTTPResponse: rsp,
-	}
-
-	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest []Account
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSON200 = &dest
-
-	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
-		var dest Error
-		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
-			return nil, err
-		}
-		response.JSONDefault = &dest
-
-	}
-
-	return response, nil
 }
 
 // ParseAddAccountResponse parses an HTTP response from a AddAccountWithResponse call
