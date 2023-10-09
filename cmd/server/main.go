@@ -4,7 +4,6 @@ import (
 	"trygobun/internal/db"
 	"trygobun/internal/env"
 	"trygobun/internal/greeting"
-	"trygobun/internal/greeting/repository"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,13 +15,17 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	dbconn, err := db.NewConnection().Establish(dbEnv)
+	db, err := db.NewConnection().Establish(dbEnv)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
 
-	e.GET("/greeting/:id", greeting.GetHandlerFunc(repository.NewGreetingRepository(dbconn)))
-	e.GET("/greeting", greeting.GetByAccountHandlerFunc(repository.NewGreetingRepository(dbconn)))
-	e.POST("/greeting", greeting.RegisterHandlerFunc(repository.NewGreetingRepository(dbconn)))
-	e.Logger.Fatal(e.Start(srvEnv.Host()))
+	e.GET("/greeting/:id", greeting.GetHandlerFunc(db))
+	e.PUT("/greeting/:id", greeting.UpdateHandlerFunc(db))
+	e.GET("/greeting", greeting.GetByAccountHandlerFunc(db))
+	e.POST("/greeting", greeting.RegisterHandlerFunc(db))
+	
+	if err := e.Start(srvEnv.Host()); err != nil {
+		e.Logger.Fatal(err)
+	}
 }

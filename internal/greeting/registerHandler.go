@@ -2,9 +2,11 @@ package greeting
 
 import (
 	"net/http"
+	"trygobun/internal/greeting/repository"
 	"trygobun/internal/greeting/service"
 
 	"github.com/labstack/echo/v4"
+	"github.com/uptrace/bun"
 )
 
 type RegisterRequest struct {
@@ -17,7 +19,7 @@ type RegisterResponse struct {
 	Message string `json:"message"`
 }
 
-func RegisterHandlerFunc(repo service.IGreetingRepository) echo.HandlerFunc {
+func RegisterHandlerFunc(db bun.IDB) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 
 		var req RegisterRequest
@@ -27,6 +29,7 @@ func RegisterHandlerFunc(repo service.IGreetingRepository) echo.HandlerFunc {
 			})
 		}
 
+		repo := repository.NewGreetingRepository(db)
 		out, err := service.NewRegisterService(repo).Register(ctx.Request().Context(), &service.RegisterServiceInput{
 			AccountID: req.AccountID,
 			Message:   req.Message,

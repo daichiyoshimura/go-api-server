@@ -9,17 +9,20 @@ import (
 	"github.com/uptrace/bun"
 )
 
-type GetRequest struct {
-	ID int64 `param:"id"`
+type UpdateRequest struct {
+	AccountID int64  `json:"accountId"`
+	Message   string `json:"message"`
 }
-type GetResponse struct {
+
+type UpdateResponse struct {
+	ID      int64  `json:"id"`
 	Message string `json:"message"`
 }
 
-func GetHandlerFunc(db bun.IDB) echo.HandlerFunc {
+func UpdateHandlerFunc(db bun.IDB) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 
-		var req GetRequest
+		var req UpdateRequest
 		if err := ctx.Bind(&req); err != nil {
 			return ctx.JSON(http.StatusBadRequest, &ErrorResponse{
 				Message: err.Error(),
@@ -27,8 +30,9 @@ func GetHandlerFunc(db bun.IDB) echo.HandlerFunc {
 		}
 
 		repo := repository.NewGreetingRepository(db)
-		out, err := service.NewGetService(repo).Get(ctx.Request().Context(), &service.GetServiceInput{
-			ID:req.ID,
+		out, err := service.NewUpdateService(repo).Update(ctx.Request().Context(), &service.UpdateServiceInput{
+			AccountID: req.AccountID,
+			Message:   req.Message,
 		})
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, &ErrorResponse{
@@ -36,7 +40,7 @@ func GetHandlerFunc(db bun.IDB) echo.HandlerFunc {
 			})
 		}
 
-		return ctx.JSON(http.StatusOK, &GetResponse{
+		return ctx.JSON(http.StatusOK, &UpdateResponse{
 			Message: out.Message,
 		})
 	}

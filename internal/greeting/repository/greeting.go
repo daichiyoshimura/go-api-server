@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
 	"trygobun/internal/greeting/model"
 
 	"github.com/uptrace/bun"
@@ -39,4 +41,34 @@ func (r *GreetingRepository) Insert(ctx context.Context, in *model.Greeting) (id
 		return 0, err
 	}
 	return res.LastInsertId()
+}
+
+func (r *GreetingRepository) Update(ctx context.Context, in *model.Greeting) error {
+
+	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
+	if err != nil {
+		return err
+	}
+
+	if err := tx.NewSelect().Model(in).WherePK().For("UPDATE").Scan(ctx); err != nil {
+		return err
+	}
+
+	res, err := tx.NewUpdate().Model(in).WherePK().Exec(ctx)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if affected == 0 {
+		return fmt.Errorf("no target to update: %v", in.ID)
+	}
+	return nil
 }
