@@ -20,6 +20,8 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	e.GET("/", greeting.GetHandlerFunc(db.NewGreetingRepository(dbconn)))
+	e.GET("/greeting/:id", greeting.GetHandlerFunc(db.NewGreetingRepository(dbconn)))
+	e.GET("/greeting", greeting.GetByAccountHandlerFunc(db.NewGreetingRepository(dbconn)))
+	e.POST("/greeting", greeting.RegisterHandlerFunc(db.NewGreetingRepository(dbconn)))
 	e.Logger.Fatal(e.Start(srvEnv.Host()))
 }

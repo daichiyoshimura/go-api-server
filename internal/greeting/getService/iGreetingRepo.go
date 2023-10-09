@@ -6,5 +6,5 @@ import (
 )
 
 type IGreetingRepository interface {
-	Find(ctx context.Context, in model.GreetingFindInput) (*model.Greeting, error)
+	FindByID(ctx context.Context, in model.GreetingFindByIdInput) (*model.Greeting, error)
 }

@@ -1,4 +1,4 @@
-package getService
+package getByAccountService
 
 import (
 	"context"
@@ -16,23 +16,21 @@ func NewService(repo IGreetingRepository) *Service {
 }
 
 type Input struct {
-	ID int64
+	AccountID int64
 }
 
 type Output struct {
-	ID      int64
-	Message string
+	Greetings []model.Greeting
 }
 
-func (s *Service) Get(ctx context.Context, in *Input) (*Output, error) {
-	greeting, err := s.repo.FindByID(ctx, model.GreetingFindByIdInput{
-		ID: in.ID,
+func (s *Service) GetByAccount(ctx context.Context, in *Input) (*Output, error) {
+	greetings, err := s.repo.FindByAccount(ctx, model.GreetingFindByAccountInput{
+		AccountID: in.AccountID,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &Output{
-		ID:      greeting.ID,
-		Message: greeting.Message,
-	}, err
+		Greetings: greetings,
+	}, nil
 }

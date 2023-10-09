@@ -1,4 +1,4 @@
-package getService
+package registerService
 
 import (
 	"context"
@@ -16,23 +16,23 @@ func NewService(repo IGreetingRepository) *Service {
 }
 
 type Input struct {
-	ID int64
-}
-
-type Output struct {
-	ID      int64
+	AccountID int64
 	Message string
 }
 
-func (s *Service) Get(ctx context.Context, in *Input) (*Output, error) {
-	greeting, err := s.repo.FindByID(ctx, model.GreetingFindByIdInput{
-		ID: in.ID,
+type Output struct {
+	ID int64
+}
+
+func (s *Service) Register(ctx context.Context, in *Input) (*Output, error) {
+	id, err := s.repo.Insert(ctx, &model.Greeting{
+		AccountID: in.AccountID,
+		Message: in.Message,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &Output{
-		ID:      greeting.ID,
-		Message: greeting.Message,
-	}, err
+		ID: id,
+	}, nil
 }

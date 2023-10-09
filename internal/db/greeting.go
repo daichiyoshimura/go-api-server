@@ -17,19 +17,26 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 	}
 }
 
-func (r *GreetingRepository) Find(ctx context.Context, in model.GreetingFindInput) (*model.Greeting, error) {
-	query := `
-	SELECT 
-		id,
-		message
-	FROM 
-		greetings
-	WHERE 
-		id = ?
-	`
+func (r *GreetingRepository) FindByID(ctx context.Context, in model.GreetingFindByIdInput) (*model.Greeting, error) {
 	greetings := make([]model.Greeting, 1)
-	if err := r.conn.NewRaw(query, greetings, in.ID).Scan(ctx, greetings); err != nil {
+	if err := r.conn.NewSelect().Model(greetings).Where("id = ?", in.ID).Scan(ctx); err != nil {
 		return nil, err
 	}
 	return &greetings[0], nil
+}
+
+func (r *GreetingRepository) FindByAccount(ctx context.Context, in model.GreetingFindByAccountInput) ([]model.Greeting, error) {
+	greetings := make([]model.Greeting, 2)
+	if err := r.conn.NewSelect().Model(greetings).Where("account_id = ?", in.AccountID).Scan(ctx); err != nil {
+		return nil, err
+	}
+	return greetings, nil
+}
+
+func (r *GreetingRepository) Insert(ctx context.Context, in *model.Greeting) (id int64, err error) {
+	res, err := r.conn.NewInsert().Model(in).Exec(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return res.LastInsertId()
 }
