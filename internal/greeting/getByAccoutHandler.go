@@ -2,7 +2,7 @@ package greeting
 
 import (
 	"net/http"
-	"trygobun/internal/greeting/getByAccountService"
+	"trygobun/internal/greeting/service"
 
 	"github.com/labstack/echo/v4"
 )
@@ -19,7 +19,7 @@ type greeting struct {
 	Message string `json:"message"`
 }
 
-func GetByAccountHandlerFunc(repo getByAccountService.IGreetingRepository) echo.HandlerFunc {
+func GetByAccountHandlerFunc(repo service.IGreetingRepository) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 
 		var req GetByAccountRequest
@@ -27,7 +27,7 @@ func GetByAccountHandlerFunc(repo getByAccountService.IGreetingRepository) echo.
 			return err
 		}
 
-		out, err := getByAccountService.NewService(repo).GetByAccount(ctx.Request().Context(), &getByAccountService.Input{
+		out, err := service.NewGetByAccountService(repo).GetByAccount(ctx.Request().Context(), &service.GetByAccountInput{
 			AccountID: req.AccountID,
 		})
 		if err != nil {

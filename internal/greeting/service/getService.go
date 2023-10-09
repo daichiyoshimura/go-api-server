@@ -1,37 +1,37 @@
-package getService
+package service
 
 import (
 	"context"
 	"trygobun/internal/greeting/model"
 )
 
-type Service struct {
+type GetService struct {
 	repo IGreetingRepository
 }
 
-func NewService(repo IGreetingRepository) *Service {
-	return &Service{
+func NewGetService(repo IGreetingRepository) *GetService {
+	return &GetService{
 		repo: repo,
 	}
 }
 
-type Input struct {
+type GetServiceInput struct {
 	ID int64
 }
 
-type Output struct {
+type GetServiceOutput struct {
 	ID      int64
 	Message string
 }
 
-func (s *Service) Get(ctx context.Context, in *Input) (*Output, error) {
+func (s *GetService) Get(ctx context.Context, in *GetServiceInput) (*GetServiceOutput, error) {
 	greeting, err := s.repo.FindByID(ctx, model.GreetingFindByIdInput{
 		ID: in.ID,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &Output{
+	return &GetServiceOutput{
 		ID:      greeting.ID,
 		Message: greeting.Message,
 	}, err
