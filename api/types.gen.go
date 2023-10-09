@@ -27,5 +27,8 @@ type NewAccount struct {
 	Name string `json:"name"`
 }
 
-// AddAccountJSONRequestBody defines body for AddAccount for application/json ContentType.
-type AddAccountJSONRequestBody = NewAccount
+// PostAccountJSONRequestBody defines body for PostAccount for application/json ContentType.
+type PostAccountJSONRequestBody = NewAccount
+
+// PutAccountJSONRequestBody defines body for PutAccount for application/json ContentType.
+type PutAccountJSONRequestBody = Account

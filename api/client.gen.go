@@ -89,20 +89,22 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// AddAccountWithBody request with any body
-	AddAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PostAccountWithBody request with any body
+	PostAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	AddAccount(ctx context.Context, body AddAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PostAccount(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AccountIdGet request
-	AccountIdGet(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetAccount request
+	GetAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// AccountIdPut request
-	AccountIdPut(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PutAccountWithBody request with any body
+	PutAccountWithBody(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PutAccount(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) AddAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAddAccountRequestWithBody(c.Server, contentType, body)
+func (c *Client) PostAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAccountRequestWithBody(c.Server, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +115,8 @@ func (c *Client) AddAccountWithBody(ctx context.Context, contentType string, bod
 	return c.Client.Do(req)
 }
 
-func (c *Client) AddAccount(ctx context.Context, body AddAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAddAccountRequest(c.Server, body)
+func (c *Client) PostAccount(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostAccountRequest(c.Server, body)
 	if err != nil {
 		return nil, err
 	}
@@ -125,8 +127,8 @@ func (c *Client) AddAccount(ctx context.Context, body AddAccountJSONRequestBody,
 	return c.Client.Do(req)
 }
 
-func (c *Client) AccountIdGet(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAccountIdGetRequest(c.Server, id)
+func (c *Client) GetAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetAccountRequest(c.Server, id)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +139,8 @@ func (c *Client) AccountIdGet(ctx context.Context, id int64, reqEditors ...Reque
 	return c.Client.Do(req)
 }
 
-func (c *Client) AccountIdPut(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewAccountIdPutRequest(c.Server, id)
+func (c *Client) PutAccountWithBody(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutAccountRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -149,19 +151,31 @@ func (c *Client) AccountIdPut(ctx context.Context, id int64, reqEditors ...Reque
 	return c.Client.Do(req)
 }
 
-// NewAddAccountRequest calls the generic AddAccount builder with application/json body
-func NewAddAccountRequest(server string, body AddAccountJSONRequestBody) (*http.Request, error) {
+func (c *Client) PutAccount(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutAccountRequest(c.Server, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// NewPostAccountRequest calls the generic PostAccount builder with application/json body
+func NewPostAccountRequest(server string, body PostAccountJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewAddAccountRequestWithBody(server, "application/json", bodyReader)
+	return NewPostAccountRequestWithBody(server, "application/json", bodyReader)
 }
 
-// NewAddAccountRequestWithBody generates requests for AddAccount with any type of body
-func NewAddAccountRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+// NewPostAccountRequestWithBody generates requests for PostAccount with any type of body
+func NewPostAccountRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -189,8 +203,8 @@ func NewAddAccountRequestWithBody(server string, contentType string, body io.Rea
 	return req, nil
 }
 
-// NewAccountIdGetRequest generates requests for AccountIdGet
-func NewAccountIdGetRequest(server string, id int64) (*http.Request, error) {
+// NewGetAccountRequest generates requests for GetAccount
+func NewGetAccountRequest(server string, id int64) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -223,8 +237,19 @@ func NewAccountIdGetRequest(server string, id int64) (*http.Request, error) {
 	return req, nil
 }
 
-// NewAccountIdPutRequest generates requests for AccountIdPut
-func NewAccountIdPutRequest(server string, id int64) (*http.Request, error) {
+// NewPutAccountRequest calls the generic PutAccount builder with application/json body
+func NewPutAccountRequest(server string, id int64, body PutAccountJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutAccountRequestWithBody(server, id, "application/json", bodyReader)
+}
+
+// NewPutAccountRequestWithBody generates requests for PutAccount with any type of body
+func NewPutAccountRequestWithBody(server string, id int64, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -249,10 +274,12 @@ func NewAccountIdPutRequest(server string, id int64) (*http.Request, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("PUT", queryURL.String(), nil)
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -300,19 +327,21 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// AddAccountWithBodyWithResponse request with any body
-	AddAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAccountResponse, error)
+	// PostAccountWithBodyWithResponse request with any body
+	PostAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAccountResponse, error)
 
-	AddAccountWithResponse(ctx context.Context, body AddAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAccountResponse, error)
+	PostAccountWithResponse(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAccountResponse, error)
 
-	// AccountIdGetWithResponse request
-	AccountIdGetWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*AccountIdGetResponse, error)
+	// GetAccountWithResponse request
+	GetAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetAccountResponse, error)
 
-	// AccountIdPutWithResponse request
-	AccountIdPutWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*AccountIdPutResponse, error)
+	// PutAccountWithBodyWithResponse request with any body
+	PutAccountWithBodyWithResponse(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
+
+	PutAccountWithResponse(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
 }
 
-type AddAccountResponse struct {
+type PostAccountResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *Account
@@ -320,7 +349,7 @@ type AddAccountResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r AddAccountResponse) Status() string {
+func (r PostAccountResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -328,14 +357,14 @@ func (r AddAccountResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AddAccountResponse) StatusCode() int {
+func (r PostAccountResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type AccountIdGetResponse struct {
+type GetAccountResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Account
@@ -343,7 +372,7 @@ type AccountIdGetResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r AccountIdGetResponse) Status() string {
+func (r GetAccountResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -351,14 +380,14 @@ func (r AccountIdGetResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AccountIdGetResponse) StatusCode() int {
+func (r GetAccountResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type AccountIdPutResponse struct {
+type PutAccountResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *[]Account
@@ -366,7 +395,7 @@ type AccountIdPutResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r AccountIdPutResponse) Status() string {
+func (r PutAccountResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -374,57 +403,65 @@ func (r AccountIdPutResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r AccountIdPutResponse) StatusCode() int {
+func (r PutAccountResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-// AddAccountWithBodyWithResponse request with arbitrary body returning *AddAccountResponse
-func (c *ClientWithResponses) AddAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddAccountResponse, error) {
-	rsp, err := c.AddAccountWithBody(ctx, contentType, body, reqEditors...)
+// PostAccountWithBodyWithResponse request with arbitrary body returning *PostAccountResponse
+func (c *ClientWithResponses) PostAccountWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostAccountResponse, error) {
+	rsp, err := c.PostAccountWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAddAccountResponse(rsp)
+	return ParsePostAccountResponse(rsp)
 }
 
-func (c *ClientWithResponses) AddAccountWithResponse(ctx context.Context, body AddAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*AddAccountResponse, error) {
-	rsp, err := c.AddAccount(ctx, body, reqEditors...)
+func (c *ClientWithResponses) PostAccountWithResponse(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAccountResponse, error) {
+	rsp, err := c.PostAccount(ctx, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAddAccountResponse(rsp)
+	return ParsePostAccountResponse(rsp)
 }
 
-// AccountIdGetWithResponse request returning *AccountIdGetResponse
-func (c *ClientWithResponses) AccountIdGetWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*AccountIdGetResponse, error) {
-	rsp, err := c.AccountIdGet(ctx, id, reqEditors...)
+// GetAccountWithResponse request returning *GetAccountResponse
+func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetAccountResponse, error) {
+	rsp, err := c.GetAccount(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAccountIdGetResponse(rsp)
+	return ParseGetAccountResponse(rsp)
 }
 
-// AccountIdPutWithResponse request returning *AccountIdPutResponse
-func (c *ClientWithResponses) AccountIdPutWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*AccountIdPutResponse, error) {
-	rsp, err := c.AccountIdPut(ctx, id, reqEditors...)
+// PutAccountWithBodyWithResponse request with arbitrary body returning *PutAccountResponse
+func (c *ClientWithResponses) PutAccountWithBodyWithResponse(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
+	rsp, err := c.PutAccountWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseAccountIdPutResponse(rsp)
+	return ParsePutAccountResponse(rsp)
 }
 
-// ParseAddAccountResponse parses an HTTP response from a AddAccountWithResponse call
-func ParseAddAccountResponse(rsp *http.Response) (*AddAccountResponse, error) {
+func (c *ClientWithResponses) PutAccountWithResponse(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
+	rsp, err := c.PutAccount(ctx, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutAccountResponse(rsp)
+}
+
+// ParsePostAccountResponse parses an HTTP response from a PostAccountWithResponse call
+func ParsePostAccountResponse(rsp *http.Response) (*PostAccountResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AddAccountResponse{
+	response := &PostAccountResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -449,15 +486,15 @@ func ParseAddAccountResponse(rsp *http.Response) (*AddAccountResponse, error) {
 	return response, nil
 }
 
-// ParseAccountIdGetResponse parses an HTTP response from a AccountIdGetWithResponse call
-func ParseAccountIdGetResponse(rsp *http.Response) (*AccountIdGetResponse, error) {
+// ParseGetAccountResponse parses an HTTP response from a GetAccountWithResponse call
+func ParseGetAccountResponse(rsp *http.Response) (*GetAccountResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AccountIdGetResponse{
+	response := &GetAccountResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -482,15 +519,15 @@ func ParseAccountIdGetResponse(rsp *http.Response) (*AccountIdGetResponse, error
 	return response, nil
 }
 
-// ParseAccountIdPutResponse parses an HTTP response from a AccountIdPutWithResponse call
-func ParseAccountIdPutResponse(rsp *http.Response) (*AccountIdPutResponse, error) {
+// ParsePutAccountResponse parses an HTTP response from a PutAccountWithResponse call
+func ParsePutAccountResponse(rsp *http.Response) (*PutAccountResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &AccountIdPutResponse{
+	response := &PutAccountResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

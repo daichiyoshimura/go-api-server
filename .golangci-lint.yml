@@ -2,8 +2,6 @@ linters:
   # Enable all available linters.
   enable-all: true
   # Disable specific linter
-  disable:
-    - typecheck
   # Enable presets.
   # https://golangci-lint.run/usage/linters
   presets:

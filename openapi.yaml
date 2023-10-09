@@ -6,7 +6,7 @@ paths:
   /account/{id}:
     get:
       summary: Returns account by id
-      operationId: accountIdGet
+      operationId: getAccount
       parameters:
         - name: id
           in: path
@@ -32,7 +32,14 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update account by id
-      operationId: accountIdPut
+      operationId: putAccount
+      requestBody:
+        description: Account to add to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
       parameters:
         - name: id
           in: path
@@ -60,7 +67,7 @@ paths:
     post:
       summary: Creates a new account
       description: Creates a new account in the store. Duplicates are not allowed
-      operationId: addAccount
+      operationId: postAccount
       requestBody:
         description: Account to add to the store
         required: true

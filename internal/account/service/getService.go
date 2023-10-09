@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"trygobun/internal/account/model"
+	"trygobun/internal/server"
 )
 
 type GetService struct {
@@ -15,24 +16,15 @@ func NewGetService(repo IaccountRepository) *GetService {
 	}
 }
 
-type GetServiceInput struct {
-	ID int64
-}
-
-type GetServiceOutput struct {
-	ID      int64
-	Message string
-}
-
-func (s *GetService) Get(ctx context.Context, in *GetServiceInput) (*GetServiceOutput, error) {
+func (s *GetService) Get(ctx context.Context, in *server.Account) (*server.Account, error) {
 	account, err := s.repo.FindByID(ctx, &model.Account{
-		ID: in.ID,
+		ID: in.Id,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &GetServiceOutput{
-		ID:      account.ID,
-		Message: account.Message,
+	return &server.Account{
+		Id:   account.ID,
+		Name: account.Name,
 	}, err
 }
