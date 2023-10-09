@@ -1,4 +1,9 @@
-# Http API Server Application Example
+# An Example For Implementing Http Server Application
+
+## Feature
+
+- loose coupling
+- easily 
 
 ## Technical Stack
 
