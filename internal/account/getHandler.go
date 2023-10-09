@@ -1,9 +1,9 @@
-package greeting
+package account
 
 import (
 	"net/http"
-	"trygobun/internal/greeting/repository"
-	"trygobun/internal/greeting/service"
+	"trygobun/internal/account/repository"
+	"trygobun/internal/account/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/uptrace/bun"
@@ -26,9 +26,9 @@ func GetHandlerFunc(db bun.IDB) echo.HandlerFunc {
 			})
 		}
 
-		repo := repository.NewGreetingRepository(db)
+		repo := repository.NewAccountRepository(db)
 		out, err := service.NewGetService(repo).Get(ctx.Request().Context(), &service.GetServiceInput{
-			ID:req.ID,
+			ID: req.ID,
 		})
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, &ErrorResponse{

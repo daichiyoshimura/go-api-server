@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
-	"trygobun/internal/greeting/model"
+	"trygobun/internal/account/model"
 )
 
 type GetService struct {
-	repo IGreetingRepository
+	repo IaccountRepository
 }
 
-func NewGetService(repo IGreetingRepository) *GetService {
+func NewGetService(repo IaccountRepository) *GetService {
 	return &GetService{
 		repo: repo,
 	}
@@ -25,14 +25,14 @@ type GetServiceOutput struct {
 }
 
 func (s *GetService) Get(ctx context.Context, in *GetServiceInput) (*GetServiceOutput, error) {
-	greeting, err := s.repo.FindByID(ctx, &model.Greeting{
+	account, err := s.repo.FindByID(ctx, &model.Account{
 		ID: in.ID,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &GetServiceOutput{
-		ID:      greeting.ID,
-		Message: greeting.Message,
+		ID:      account.ID,
+		Message: account.Message,
 	}, err
 }

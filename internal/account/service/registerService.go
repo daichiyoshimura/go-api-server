@@ -2,21 +2,20 @@ package service
 
 import (
 	"context"
-	"trygobun/internal/greeting/model"
+	"trygobun/internal/account/model"
 )
 
 type RegisterService struct {
-	repo IGreetingRepository
+	repo IaccountRepository
 }
 
-func NewRegisterService(repo IGreetingRepository) *RegisterService {
+func NewRegisterService(repo IaccountRepository) *RegisterService {
 	return &RegisterService{
 		repo: repo,
 	}
 }
 
 type RegisterServiceInput struct {
-	AccountID int64
 	Message   string
 }
 
@@ -25,8 +24,7 @@ type RegisterServiceOutput struct {
 }
 
 func (s *RegisterService) Register(ctx context.Context, in *RegisterServiceInput) (*RegisterServiceOutput, error) {
-	id, err := s.repo.Insert(ctx, &model.Greeting{
-		AccountID: in.AccountID,
+	id, err := s.repo.Insert(ctx, &model.Account{
 		Message:   in.Message,
 	})
 	if err != nil {

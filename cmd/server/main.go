@@ -1,9 +1,9 @@
 package main
 
 import (
+	"trygobun/internal/account"
 	"trygobun/internal/db"
 	"trygobun/internal/env"
-	"trygobun/internal/greeting"
 
 	"github.com/labstack/echo/v4"
 )
@@ -20,11 +20,10 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	e.GET("/greeting/:id", greeting.GetHandlerFunc(db))
-	e.PUT("/greeting/:id", greeting.UpdateHandlerFunc(db))
-	e.GET("/greeting", greeting.GetByAccountHandlerFunc(db))
-	e.POST("/greeting", greeting.RegisterHandlerFunc(db))
-	
+	e.GET("/account/:id", account.GetHandlerFunc(db))
+	e.PUT("/account/:id", account.UpdateHandlerFunc(db))
+	e.POST("/account", account.RegisterHandlerFunc(db))
+
 	if err := e.Start(srvEnv.Host()); err != nil {
 		e.Logger.Fatal(err)
 	}

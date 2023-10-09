@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
-	"trygobun/internal/greeting/model"
+	"trygobun/internal/account/model"
 )
 
 type UpdateService struct {
-	repo IGreetingRepository
+	repo IaccountRepository
 }
 
-func NewUpdateService(repo IGreetingRepository) *UpdateService {
+func NewUpdateService(repo IaccountRepository) *UpdateService {
 	return &UpdateService{
 		repo: repo,
 	}
@@ -17,7 +17,6 @@ func NewUpdateService(repo IGreetingRepository) *UpdateService {
 
 type UpdateServiceInput struct {
 	ID        int64
-	AccountID int64
 	Message   string
 }
 
@@ -26,9 +25,8 @@ type UpdateServiceOutput struct {
 }
 
 func (s *UpdateService) Update(ctx context.Context, in *UpdateServiceInput) (*UpdateServiceOutput, error) {
-	err := s.repo.Update(ctx, &model.Greeting{
+	err := s.repo.Update(ctx, &model.Account{
 		ID:        in.ID,
-		AccountID: in.AccountID,
 		Message:   in.Message,
 	})
 	if err != nil {
