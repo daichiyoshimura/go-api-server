@@ -25,7 +25,7 @@ type GetServiceOutput struct {
 }
 
 func (s *GetService) Get(ctx context.Context, in *GetServiceInput) (*GetServiceOutput, error) {
-	greeting, err := s.repo.FindByID(ctx, model.GreetingFindByIdInput{
+	greeting, err := s.repo.FindByID(ctx, &model.Greeting{
 		ID: in.ID,
 	})
 	if err != nil {

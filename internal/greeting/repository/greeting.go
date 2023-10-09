@@ -1,4 +1,4 @@
-package db
+package repository
 
 import (
 	"context"
@@ -17,7 +17,7 @@ func NewGreetingRepository(conn bun.IDB) *GreetingRepository {
 	}
 }
 
-func (r *GreetingRepository) FindByID(ctx context.Context, in model.GreetingFindByIdInput) (*model.Greeting, error) {
+func (r *GreetingRepository) FindByID(ctx context.Context, in *model.Greeting) (*model.Greeting, error) {
 	greetings := make([]model.Greeting, 1)
 	if err := r.conn.NewSelect().Model(greetings).Where("id = ?", in.ID).Scan(ctx); err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func (r *GreetingRepository) FindByID(ctx context.Context, in model.GreetingFind
 	return &greetings[0], nil
 }
 
-func (r *GreetingRepository) FindByAccount(ctx context.Context, in model.GreetingFindByAccountInput) ([]model.Greeting, error) {
+func (r *GreetingRepository) FindByAccount(ctx context.Context, in *model.Greeting) ([]model.Greeting, error) {
 	greetings := make([]model.Greeting, 2)
 	if err := r.conn.NewSelect().Model(greetings).Where("account_id = ?", in.AccountID).Scan(ctx); err != nil {
 		return nil, err

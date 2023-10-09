@@ -24,7 +24,7 @@ type GetByAccountOutput struct {
 }
 
 func (s *GetByAccountService) GetByAccount(ctx context.Context, in *GetByAccountInput) (*GetByAccountOutput, error) {
-	greetings, err := s.repo.FindByAccount(ctx, model.GreetingFindByAccountInput{
+	greetings, err := s.repo.FindByAccount(ctx, &model.Greeting{
 		AccountID: in.AccountID,
 	})
 	if err != nil {
