@@ -1,22 +1,23 @@
-package service
+package usecase
 
 import (
-	"context"
 	"awsomeapp/internal/account/model"
 	"awsomeapp/internal/server"
+	"context"
 )
 
-type GetService struct {
-	repo IaccountRepository
+type GetUsecase struct {
+	repo IAccountRepository
 }
 
-func NewGetService(repo IaccountRepository) *GetService {
-	return &GetService{
+func NewGetUsecase(repo IAccountRepository) *GetUsecase {
+	return &GetUsecase{
 		repo: repo,
 	}
 }
 
-func (s *GetService) Get(ctx context.Context, in *server.Account) (*server.Account, error) {
+func (s *GetUsecase) Get(ctx context.Context, in *server.Account) (*server.Account, error) {
+
 	account, err := s.repo.FindByID(ctx, &model.Account{
 		ID: in.Id,
 	})

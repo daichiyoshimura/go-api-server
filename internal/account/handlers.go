@@ -1,10 +1,10 @@
 package account
 
 import (
-	"net/http"
 	"awsomeapp/internal/account/repository"
-	"awsomeapp/internal/account/service"
+	"awsomeapp/internal/account/usecase"
 	"awsomeapp/internal/server"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/uptrace/bun"
@@ -23,7 +23,7 @@ func NewHandlers(db bun.IDB) *Handlers {
 func (h *Handlers) GetAccount(ctx echo.Context, id int64) error {
 
 	repo := repository.NewAccountRepository(h.db)
-	out, err := service.NewGetService(repo).Get(ctx.Request().Context(), &server.Account{
+	out, err := usecase.NewGetUsecase(repo).Get(ctx.Request().Context(), &server.Account{
 		Id: id,
 	})
 	if err != nil {
@@ -48,7 +48,7 @@ func (h *Handlers) PostAccount(ctx echo.Context) error {
 	}
 
 	repo := repository.NewAccountRepository(h.db)
-	out, err := service.NewRegisterService(repo).Register(ctx.Request().Context(), &server.NewAccount{
+	out, err := usecase.NewCreateUsecase(repo).Create(ctx.Request().Context(), &server.NewAccount{
 		Name: req.Name,
 	})
 	if err != nil {
@@ -72,7 +72,7 @@ func (h *Handlers) PutAccount(ctx echo.Context, id int64) error {
 	}
 
 	repo := repository.NewAccountRepository(h.db)
-	out, err := service.NewUpdateService(repo).Update(ctx.Request().Context(), &server.Account{
+	out, err := usecase.NewUpdateUsecase(repo).Update(ctx.Request().Context(), &server.Account{
 		Name: req.Name,
 	})
 	if err != nil {

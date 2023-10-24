@@ -1,22 +1,22 @@
-package service
+package usecase
 
 import (
-	"context"
 	"awsomeapp/internal/account/model"
 	"awsomeapp/internal/server"
+	"context"
 )
 
-type UpdateService struct {
-	repo IaccountRepository
+type UpdateUsecase struct {
+	repo IAccountRepository
 }
 
-func NewUpdateService(repo IaccountRepository) *UpdateService {
-	return &UpdateService{
+func NewUpdateUsecase(repo IAccountRepository) *UpdateUsecase {
+	return &UpdateUsecase{
 		repo: repo,
 	}
 }
 
-func (s *UpdateService) Update(ctx context.Context, in *server.Account) (*server.Account, error) {
+func (s *UpdateUsecase) Update(ctx context.Context, in *server.Account) (*server.Account, error) {
 	err := s.repo.Update(ctx, &model.Account{
 		ID:   in.Id,
 		Name: in.Name,
