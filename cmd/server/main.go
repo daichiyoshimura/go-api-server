@@ -1,6 +1,7 @@
 package main
 
 import (
+	"awsomeapp/cmd/di"
 	"awsomeapp/internal/db"
 	"awsomeapp/internal/env"
 	"awsomeapp/internal/server"
@@ -22,7 +23,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	handlers, err := Handlers(db)
+	handlers, err := di.Wire(db)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}

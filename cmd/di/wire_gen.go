@@ -4,7 +4,7 @@
 //go:build !wireinject
 // +build !wireinject
 
-package main
+package di
 
 import (
 	"awsomeapp/internal"
@@ -15,7 +15,7 @@ import (
 
 // Injectors from wire.go:
 
-func Handlers(db *bun.DB) (*internal.Handlers, error) {
+func Wire(db *bun.DB) (*internal.Handlers, error) {
 	accountRepository := repository.NewAccountRepository(db)
 	getHandler := account.NewGetHandler(accountRepository)
 	postHandler := account.NewPostHandler(accountRepository)

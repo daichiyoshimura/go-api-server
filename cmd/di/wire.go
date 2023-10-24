@@ -2,7 +2,7 @@
 // +build wireinject
 
 // The build tag makes sure the stub is not built in the final build.
-package main
+package di
 
 import (
 	"awsomeapp/internal"
@@ -13,7 +13,7 @@ import (
 	"github.com/uptrace/bun"
 )
 
-func Handlers(db *bun.DB) (*internal.Handlers, error) {
+func Wire(db *bun.DB) (*internal.Handlers, error) {
 
 	wire.Build(
 		repository.NewAccountRepository,
