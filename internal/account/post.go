@@ -1,22 +1,20 @@
 package account
 
 import (
-	"awsomeapp/internal/account/repository"
 	"awsomeapp/internal/account/usecase"
 	"awsomeapp/internal/server"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/uptrace/bun"
 )
 
 type PostHandler struct {
-	db bun.IDB
+	repo IAccountRepository
 }
 
-func NewPostHandler(db bun.IDB) *PostHandler {
+func NewPostHandler(repo IAccountRepository) *PostHandler {
 	return &PostHandler{
-		db: db,
+		repo: repo,
 	}
 }
 
@@ -29,8 +27,7 @@ func (h *PostHandler) PostAccount(ctx echo.Context) error {
 		})
 	}
 
-	repo := repository.NewAccountRepository(h.db)
-	out, err := usecase.NewCreateUsecase(repo).Create(ctx.Request().Context(), &server.NewAccount{
+	out, err := usecase.NewCreateUsecase(h.repo).Create(ctx.Request().Context(), &server.NewAccount{
 		Name: req.Name,
 	})
 	if err != nil {

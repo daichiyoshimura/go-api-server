@@ -1,22 +1,20 @@
 package account
 
 import (
-	"awsomeapp/internal/account/repository"
 	"awsomeapp/internal/account/usecase"
 	"awsomeapp/internal/server"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/uptrace/bun"
 )
 
 type PutHandler struct {
-	db bun.IDB
+	repo IAccountRepository
 }
 
-func NewPutHandler(db bun.IDB) *PutHandler {
+func NewPutHandler(repo IAccountRepository) *PutHandler {
 	return &PutHandler{
-		db:db,
+		repo: repo,
 	}
 }
 
@@ -28,8 +26,7 @@ func (h *PutHandler) PutAccount(ctx echo.Context, id int64) error {
 		})
 	}
 
-	repo := repository.NewAccountRepository(h.db)
-	out, err := usecase.NewUpdateUsecase(repo).Update(ctx.Request().Context(), &server.Account{
+	out, err := usecase.NewUpdateUsecase(h.repo).Update(ctx.Request().Context(), &server.Account{
 		Name: req.Name,
 	})
 	if err != nil {
