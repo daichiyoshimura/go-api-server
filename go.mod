@@ -1,4 +1,4 @@
-module trygobun
+module awsomeapp
 
 go 1.21.1
 

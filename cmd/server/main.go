@@ -1,10 +1,10 @@
 package main
 
 import (
-	"trygobun/internal/account"
-	"trygobun/internal/db"
-	"trygobun/internal/env"
-	"trygobun/internal/server"
+	"awsomeapp/internal/account"
+	"awsomeapp/internal/db"
+	"awsomeapp/internal/env"
+	"awsomeapp/internal/server"
 
 	"github.com/labstack/echo/v4"
 )

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"trygobun/internal/account/model"
+	"awsomeapp/internal/account/model"
 
 	"github.com/uptrace/bun"
 )

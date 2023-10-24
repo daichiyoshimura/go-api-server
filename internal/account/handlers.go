@@ -2,9 +2,9 @@ package account
 
 import (
 	"net/http"
-	"trygobun/internal/account/repository"
-	"trygobun/internal/account/service"
-	"trygobun/internal/server"
+	"awsomeapp/internal/account/repository"
+	"awsomeapp/internal/account/service"
+	"awsomeapp/internal/server"
 
 	"github.com/labstack/echo/v4"
 	"github.com/uptrace/bun"

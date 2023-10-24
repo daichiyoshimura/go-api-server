@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"trygobun/internal/account/model"
+	"awsomeapp/internal/account/model"
 )
 
 type IaccountRepository interface {

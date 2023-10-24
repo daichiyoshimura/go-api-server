@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"trygobun/internal/account/model"
-	"trygobun/internal/server"
+	"awsomeapp/internal/account/model"
+	"awsomeapp/internal/server"
 )
 
 type UpdateService struct {
