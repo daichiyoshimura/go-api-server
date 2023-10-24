@@ -21,7 +21,15 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	server.RegisterHandlers(e, account.NewHandlers(db))
+	server.RegisterHandlers(e, struct{
+		*account.GetHandler
+		*account.PostHandler
+		*account.PutHandler
+	}{
+		account.NewGetHandler(db),
+		account.NewPostHandler(db),
+		account.NewPutHandler(db),
+	})
 
 	if err := e.Start(srvEnv.Host()); err != nil {
 		e.Logger.Fatal(err)
