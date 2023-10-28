@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"strings"
 
+	"github.com/cockroachdb/errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/mysqldialect"
@@ -14,6 +15,10 @@ const (
 	protocol   string = "tcp"
 	charset    string = "utf8mb4"
 	parseTime  string = "true"
+)
+
+const (
+	errMsgConnection string = "failed to establish db connection: %w"
 )
 
 type Connection struct{}
@@ -32,12 +37,12 @@ type IEnv interface {
 func (c *Connection) Establish(env IEnv) (*bun.DB, error) {
 	source, err := c.dataSourceName(env)
 	if err != nil {
-		return nil, err
+		return nil, errors.Errorf(errMsgConnection, err)
 	}
 
 	conn, err := sql.Open(driverName, source)
 	if err != nil {
-		return nil, err
+		return nil, errors.Errorf(errMsgConnection, err)
 	}
 	defer conn.Close()
 
@@ -66,7 +71,7 @@ func (c *Connection) dataSourceName(env IEnv) (string, error) {
 	sb := &strings.Builder{}
 	for _, part := range parts {
 		if _, err := sb.WriteString(part); err != nil {
-			return "", err
+			return "", errors.Errorf(errMsgConnection, err)
 		}
 	}
 
