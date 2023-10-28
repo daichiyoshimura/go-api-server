@@ -5,25 +5,25 @@ type AccountID int64
 type AccountName string
 
 type AccountEntity struct {
-	id AccountID
+	id   AccountID
 	name AccountName
- }
+}
 
 type AccountDTO struct {
-	ID AccountID
+	ID   *AccountID
 	Name AccountName
 }
 
 func NewAccountEntity(dto *AccountDTO) *AccountEntity {
 	return &AccountEntity{
-		id: dto.ID,
+		id:   *dto.ID,
 		name: dto.Name,
 	}
-} 
+}
 
 func (e *AccountEntity) DTO() *AccountDTO {
 	return &AccountDTO{
-		ID: e.id,
+		ID:   &e.id,
 		Name: e.name,
 	}
 }

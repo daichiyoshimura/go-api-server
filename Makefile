@@ -11,6 +11,12 @@ openapi:
 wire:
 	wire internal/di/wire.go
 
+# golangci-lint
+.PHONY: lint
+lint:
+	go mod tidy
+	golangci-lint run --fix
+
 # run server
 .PHONY: run
 run:

@@ -21,7 +21,7 @@ type Account struct {
 
 func createAccountFromDTO(dto *account.AccountDTO) *Account {
 	return &Account{
-		ID:   int64(dto.ID),
+		ID:   int64(*dto.ID),
 		Name: string(dto.Name),
 	}
 }
@@ -33,13 +33,13 @@ type AccountCreateInput struct {
 type AccountCreateOutput Account
 
 func (u *AccountUsecase) Create(in *AccountCreateInput) (*AccountCreateOutput, error) {
-
 	ac, err := account.NewAccountService(u.repo).Create(&account.AccountDTO{
 		Name: account.AccountName(in.Name),
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	return (*AccountCreateOutput)(createAccountFromDTO(ac.DTO())), nil
 }
 
@@ -50,7 +50,6 @@ type AccountGetInput struct {
 type AccountGetOutput Account
 
 func (u *AccountUsecase) Get(in *AccountGetInput) (*AccountGetOutput, error) {
-
 	ac, err := account.NewAccountService(u.repo).Get(account.AccountID(in.ID))
 	if err != nil {
 		return nil, err
@@ -64,15 +63,15 @@ type AccountUpdateInput Account
 type AccountUpdateOutput Account
 
 func (u *AccountUsecase) Update(in *AccountUpdateInput) (*AccountUpdateOutput, error) {
-	ac, err := account.NewAccountService(u.repo).Update(&account.AccountDTO{
-		ID:   account.AccountID(in.ID),
+	account, err := account.NewAccountService(u.repo).Update(&account.AccountDTO{
+		ID:   (*account.AccountID)(&in.ID),
 		Name: account.AccountName(in.Name),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return (*AccountUpdateOutput)(createAccountFromDTO(ac.DTO())), nil
+	return (*AccountUpdateOutput)(createAccountFromDTO(account.DTO())), nil
 }
 
 type AccountDeleteInput struct {

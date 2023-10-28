@@ -1,11 +1,12 @@
 package repository
 
 import (
-	"awsomeapp/internal/domain/account"
-	"awsomeapp/internal/repository/model"
 	"context"
 	"database/sql"
 	"fmt"
+
+	"awsomeapp/internal/domain/account"
+	"awsomeapp/internal/repository/model"
 
 	"github.com/uptrace/bun"
 )
@@ -21,19 +22,19 @@ func NewAccountRepository(conn bun.IDB) *AccountRepository {
 }
 
 func (r *AccountRepository) Get(id account.AccountID) (*account.AccountDTO, error) {
-
 	ctx := context.Background()
 	ac := &model.Account{
 		ID: int64(id),
 	}
+
 	if err := r.conn.NewSelect().Model(ac).WherePK().Scan(ctx); err != nil {
 		return nil, err
 	}
+
 	return ac.DTO(), nil
 }
 
 func (r *AccountRepository) Create(in *account.AccountDTO) (*account.AccountDTO, error) {
-
 	ctx := context.Background()
 	ac := model.CreateAccountFromDTO(in)
 
@@ -44,30 +45,35 @@ func (r *AccountRepository) Create(in *account.AccountDTO) (*account.AccountDTO,
 
 	res, err := tx.NewInsert().Model(ac).Exec(ctx)
 	if err != nil {
+		
 		if err := tx.Rollback(); err != nil {
 			return nil, err
 		}
+
 		return nil, err
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
+
 		if err := tx.Rollback(); err != nil {
 			return nil, err
 		}
+
 		return nil, err
 	}
 
 	if err := tx.Commit(); err != nil {
+
 		return nil, err
 	}
 
 	ac.ID = id
+	
 	return ac.DTO(), nil
 }
 
 func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO, error) {
-
 	ctx := context.Background()
 	ac := model.CreateAccountFromDTO(in)
 
@@ -98,6 +104,7 @@ func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO,
 		}
 		return nil, err
 	}
+
 	if affected == 0 {
 		if err := tx.Rollback(); err != nil {
 			return nil, err
@@ -111,11 +118,11 @@ func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO,
 		}
 		return nil, err
 	}
+
 	return ac.DTO(), nil
 }
 
 func (r *AccountRepository) Delete(id account.AccountID) error {
-
 	ctx := context.Background()
 	ac := &model.Account{
 		ID: int64(id),

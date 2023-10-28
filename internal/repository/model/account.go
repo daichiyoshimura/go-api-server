@@ -1,9 +1,9 @@
 package model
 
 import (
-	"awsomeapp/internal/domain/account"
 	"time"
 
+	"awsomeapp/internal/domain/account"
 	"github.com/uptrace/bun"
 )
 
@@ -18,14 +18,14 @@ type Account struct {
 
 func CreateAccountFromDTO(dto *account.AccountDTO) *Account {
 	return &Account{
-		ID:   int64(dto.ID),
+		ID:   int64(*dto.ID),
 		Name: string(dto.Name),
 	}
 }
 
 func (a *Account) DTO() *account.AccountDTO {
 	return &account.AccountDTO{
-		ID:   account.AccountID(a.ID),
+		ID:   (*account.AccountID)(&a.ID),
 		Name: account.AccountName(a.Name),
 	}
 }

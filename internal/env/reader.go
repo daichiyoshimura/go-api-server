@@ -18,7 +18,6 @@ func NewReader() *Reader {
 }
 
 func (r *Reader) Read() (*Server, *DB, error) {
-
 	stg := NewStage(os.Getenv("STAGE"))
 	if stg.isDev() {
 		if err := godotenv.Load(".env"); err != nil {
@@ -42,13 +41,14 @@ func (r *Reader) Read() (*Server, *DB, error) {
 func (r *Reader) read(key string) (string, error) {
 	val := os.Getenv(key)
 	if len(val) == 0 {
-		return val, fmt.Errorf(errMsgEmpty, key)
+		err := fmt.Errorf(errMsgEmpty, key)
+		return val, err
 	}
+
 	return val, nil
 }
 
 func (r *Reader) server() (*Server, error) {
-
 	host, err := r.read("SERVER_HOST")
 	if err != nil {
 		return nil, err
@@ -60,7 +60,6 @@ func (r *Reader) server() (*Server, error) {
 }
 
 func (r *Reader) db() (*DB, error) {
-
 	host, err := r.read("DB_HOST")
 	if err != nil {
 		return nil, err

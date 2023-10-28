@@ -8,7 +8,6 @@ package di
 
 import (
 	"awsomeapp/internal/handler"
-	"awsomeapp/internal/handler/account"
 	"awsomeapp/internal/repository"
 	"github.com/uptrace/bun"
 )
@@ -17,13 +16,9 @@ import (
 
 func Wire(db *bun.DB) (*handler.Handlers, error) {
 	accountRepository := repository.NewAccountRepository(db)
-	accountGetHandler := account.NewAccountGetHandler(accountRepository)
-	accountPostHandler := account.NewAccountPostHandler(accountRepository)
-	accountPutHandler := account.NewAccountPutHandler(accountRepository)
+	accountHandler := handler.NewAccountHandler(accountRepository)
 	handlers := &handler.Handlers{
-		AccountGetHandler:  accountGetHandler,
-		AccountPostHandler: accountPostHandler,
-		AccountPutHandler:  accountPutHandler,
+		AccountHandler: accountHandler,
 	}
 	return handlers, nil
 }

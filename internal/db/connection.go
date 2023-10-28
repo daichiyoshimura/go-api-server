@@ -4,10 +4,9 @@ import (
 	"database/sql"
 	"strings"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/mysqldialect"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
@@ -35,16 +34,17 @@ func (c *Connection) Establish(env IEnv) (*bun.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	conn, err := sql.Open(driverName, source)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
+
 	return bun.NewDB(conn, mysqldialect.New()), nil
 }
 
 func (c *Connection) dataSourceName(env IEnv) (string, error) {
-
 	parts := []string{
 		env.User(),
 		":",
@@ -56,6 +56,7 @@ func (c *Connection) dataSourceName(env IEnv) (string, error) {
 		")/",
 		env.Instance(),
 	}
+
 	options := map[string]string{
 		"charset":   charset,
 		"parseTime": parseTime,
@@ -74,6 +75,7 @@ func (c *Connection) dataSourceName(env IEnv) (string, error) {
 
 func (c *Connection) appendOptions(parts *[]string, options *map[string]string) {
 	partsOriginLength := len(*parts)
+
 	var partsLength int
 	for k, v := range *options {
 		partsLength = len(*parts)
@@ -82,6 +84,7 @@ func (c *Connection) appendOptions(parts *[]string, options *map[string]string) 
 		} else {
 			*parts = append(*parts, "&")
 		}
+
 		*parts = append(*parts, k)
 		*parts = append(*parts, "=")
 		*parts = append(*parts, v)

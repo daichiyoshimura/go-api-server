@@ -1,0 +1,22 @@
+linters:
+  # Enable all available linters.
+  enable-all: true
+  # Disable specific linter
+  disable:
+    - ifshort
+    - varcheck
+    - deadcode
+    - structcheck
+    - nosnakecase
+    - interfacer
+    - exhaustivestruct
+    - maligned
+    - golint
+    - scopelint
+    - depguard
+    - revive
+    - varnamelen
+    - exhaustruct
+  skip-files:
+    - ".*\\_gen\\.go"
+  

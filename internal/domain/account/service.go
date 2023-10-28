@@ -15,6 +15,7 @@ func (s *AccountService) Get(id AccountID) (*AccountEntity, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return NewAccountEntity(ac), nil
 }
 
@@ -23,6 +24,7 @@ func (s *AccountService) Create(in *AccountDTO) (*AccountEntity, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return NewAccountEntity(ac), nil
 }
 
@@ -31,6 +33,7 @@ func (s *AccountService) Update(in *AccountDTO) (*AccountEntity, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return NewAccountEntity(ac), nil
 }
 

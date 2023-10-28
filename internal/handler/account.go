@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"awsomeapp/internal/server"
-	"awsomeapp/internal/usecase"
 	"net/http"
 
+	"awsomeapp/internal/server"
+	"awsomeapp/internal/usecase"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,7 +19,6 @@ func NewAccountHandler(repo IAccountRepository) *AccountHandler {
 }
 
 func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
-
 	out, err := usecase.NewAccountUsecase(h.repo).Get(&usecase.AccountGetInput{
 		ID: id,
 	})
@@ -36,7 +35,6 @@ func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
 }
 
 func (h *AccountHandler) PostAccount(ctx echo.Context) error {
-
 	var req server.PostAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, &server.Error{
@@ -59,7 +57,6 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 }
 
 func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
-
 	var req server.PutAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, &server.Error{
@@ -83,7 +80,6 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 }
 
 func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
-	
 	err := usecase.NewAccountUsecase(h.repo).Delete(&usecase.AccountDeleteInput{
 		ID: id,
 	})
