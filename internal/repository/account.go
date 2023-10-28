@@ -1,11 +1,10 @@
 package repository
 
 import (
-	"context"
-	"database/sql"
-
 	"awsomeapp/internal/domain/account"
 	"awsomeapp/internal/repository/model"
+	"context"
+	"database/sql"
 
 	"github.com/cockroachdb/errors"
 	"github.com/uptrace/bun"

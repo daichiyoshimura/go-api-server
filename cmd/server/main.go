@@ -5,7 +5,6 @@ import (
 	"awsomeapp/internal/di"
 	"awsomeapp/internal/env"
 	"awsomeapp/internal/server"
-
 	"github.com/labstack/echo/v4"
 )
 

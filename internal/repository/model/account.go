@@ -1,9 +1,9 @@
 package model
 
 import (
+	"awsomeapp/internal/domain/account"
 	"time"
 
-	"awsomeapp/internal/domain/account"
 	"github.com/uptrace/bun"
 )
 

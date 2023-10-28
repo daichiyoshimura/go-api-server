@@ -19,4 +19,10 @@ linters:
     - exhaustruct
   skip-files:
     - ".*\\_gen\\.go"
-  
+linters-settings:
+  wrapcheck:
+    ignoreSigs:
+      - (github.com/labstack/echo/v4.Context).
+      - github.com/cockroachdb/errors.
+  cyclop:
+    max-complexity: 12

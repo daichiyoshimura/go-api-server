@@ -1,10 +1,9 @@
 package handler
 
 import (
-	"net/http"
-
 	"awsomeapp/internal/server"
 	"awsomeapp/internal/usecase"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )

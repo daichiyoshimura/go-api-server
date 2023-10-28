@@ -1,4 +1,6 @@
 {
     "go.lintTool": "golangci-lint",
-    "go.buildFlags": ["-tags=wireinject"]
+    "go.buildFlags": [
+        "-tags=wireinject"
+    ]
 }

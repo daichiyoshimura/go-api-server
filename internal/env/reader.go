@@ -43,7 +43,6 @@ func (r *Reader) Read() (*Server, *DB, error) {
 func (r *Reader) read(key string) (string, error) {
 	val := os.Getenv(key)
 	if len(val) == 0 {
-		
 		return val, errors.Errorf(errMsgEnv, errors.Newf(errMsgEmpty, key))
 	}
 
