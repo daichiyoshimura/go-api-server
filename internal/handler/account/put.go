@@ -8,26 +8,25 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type PostHandler struct {
+type AccountPutHandler struct {
 	repo IAccountRepository
 }
 
-func NewPostHandler(repo IAccountRepository) *PostHandler {
-	return &PostHandler{
+func NewAccountPutHandler(repo IAccountRepository) *AccountPutHandler {
+	return &AccountPutHandler{
 		repo: repo,
 	}
 }
 
-func (h *PostHandler) PostAccount(ctx echo.Context) error {
-
-	var req server.PostAccountJSONRequestBody
+func (h *AccountPutHandler) PutAccount(ctx echo.Context, id int64) error {
+	var req server.PutAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
 		return ctx.JSON(http.StatusBadRequest, &server.Error{
 			Message: err.Error(),
 		})
 	}
 
-	out, err := usecase.NewCreateUsecase(h.repo).Create(ctx.Request().Context(), &server.NewAccount{
+	out, err := usecase.NewUpdateUsecase(h.repo).Update(ctx.Request().Context(), &server.Account{
 		Name: req.Name,
 	})
 	if err != nil {
@@ -37,7 +36,6 @@ func (h *PostHandler) PostAccount(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, &server.Account{
-		Id: out.Id,
+		Name: out.Name,
 	})
-
 }

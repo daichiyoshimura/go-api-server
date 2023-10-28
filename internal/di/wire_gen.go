@@ -7,23 +7,23 @@
 package di
 
 import (
-	"awsomeapp/internal"
-	"awsomeapp/internal/account"
+	"awsomeapp/internal/handler"
+	"awsomeapp/internal/handler/account"
 	"awsomeapp/internal/repository"
 	"github.com/uptrace/bun"
 )
 
 // Injectors from wire.go:
 
-func Wire(db *bun.DB) (*internal.Handlers, error) {
+func Wire(db *bun.DB) (*handler.Handlers, error) {
 	accountRepository := repository.NewAccountRepository(db)
-	getHandler := account.NewGetHandler(accountRepository)
-	postHandler := account.NewPostHandler(accountRepository)
-	putHandler := account.NewPutHandler(accountRepository)
-	handlers := &internal.Handlers{
-		GetHandler:  getHandler,
-		PostHandler: postHandler,
-		PutHandler:  putHandler,
+	accountGetHandler := account.NewAccountGetHandler(accountRepository)
+	accountPostHandler := account.NewAccountPostHandler(accountRepository)
+	accountPutHandler := account.NewAccountPutHandler(accountRepository)
+	handlers := &handler.Handlers{
+		AccountGetHandler:  accountGetHandler,
+		AccountPostHandler: accountPostHandler,
+		AccountPutHandler:  accountPutHandler,
 	}
 	return handlers, nil
 }

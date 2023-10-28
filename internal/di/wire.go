@@ -5,24 +5,24 @@
 package di
 
 import (
-	"awsomeapp/internal"
-	"awsomeapp/internal/account"
+	"awsomeapp/internal/handler"
+	"awsomeapp/internal/handler/account"
 	"awsomeapp/internal/repository"
 
 	"github.com/google/wire"
 	"github.com/uptrace/bun"
 )
 
-func Wire(db *bun.DB) (*internal.Handlers, error) {
+func Wire(db *bun.DB) (*handler.Handlers, error) {
 
 	wire.Build(
 		repository.NewAccountRepository,
 		wire.Bind(new(bun.IDB), new(*bun.DB)),
-		account.NewGetHandler,
-		account.NewPostHandler,
-		account.NewPutHandler,
+		account.NewAccountGetHandler,
+		account.NewAccountPostHandler,
+		account.NewAccountPutHandler,
 		wire.Bind(new(account.IAccountRepository), new(*repository.AccountRepository)),
-		wire.Struct(new(internal.Handlers), "*"),
+		wire.Struct(new(handler.Handlers), "*"),
 	)
-	return &internal.Handlers{}, nil
+	return &handler.Handlers{}, nil
 }

@@ -8,17 +8,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type GetHandler struct {
+type AccountGetHandler struct {
 	repo IAccountRepository
 }
 
-func NewGetHandler(repo IAccountRepository) *GetHandler {
-	return &GetHandler{
+func NewAccountGetHandler(repo IAccountRepository) *AccountGetHandler {
+	return &AccountGetHandler{
 		repo: repo,
 	}
 }
 
-func (h *GetHandler) GetAccount(ctx echo.Context, id int64) error {
+func (h *AccountGetHandler) GetAccount(ctx echo.Context, id int64) error {
 
 	out, err := usecase.NewGetUsecase(h.repo).Get(ctx.Request().Context(), &server.Account{
 		Id: id,

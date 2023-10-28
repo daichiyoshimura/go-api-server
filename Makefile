@@ -9,7 +9,7 @@ openapi:
 # generate wire_gen.go
 .PHONY: wire
 wire:
-	wire cmd/di/wire.go
+	wire internal/di/wire.go
 
 # run server
 .PHONY: run
