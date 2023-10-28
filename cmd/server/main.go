@@ -1,8 +1,8 @@
 package main
 
 import (
-	"awsomeapp/internal/di"
 	"awsomeapp/internal/db"
+	"awsomeapp/internal/di"
 	"awsomeapp/internal/env"
 	"awsomeapp/internal/server"
 

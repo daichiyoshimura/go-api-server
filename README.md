@@ -11,4 +11,5 @@
 | ---- | ---- | ---- |
 | Frame Work | echo | <https://echo.labstack.com/> |
 | Database Client | bun | <https://bun.uptrace.dev/> |
+| Dependency Injection | wire | <github.com/google/wire> |
 | I/F | oapi-codegen | <https://github.com/deepmap/oapi-codegen> |

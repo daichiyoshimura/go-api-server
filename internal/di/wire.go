@@ -6,7 +6,6 @@ package di
 
 import (
 	"awsomeapp/internal/handler"
-	"awsomeapp/internal/handler/account"
 	"awsomeapp/internal/repository"
 
 	"github.com/google/wire"
@@ -18,10 +17,8 @@ func Wire(db *bun.DB) (*handler.Handlers, error) {
 	wire.Build(
 		repository.NewAccountRepository,
 		wire.Bind(new(bun.IDB), new(*bun.DB)),
-		account.NewAccountGetHandler,
-		account.NewAccountPostHandler,
-		account.NewAccountPutHandler,
-		wire.Bind(new(account.IAccountRepository), new(*repository.AccountRepository)),
+		handler.NewAccountHandler,
+		wire.Bind(new(handler.IAccountRepository), new(*repository.AccountRepository)),
 		wire.Struct(new(handler.Handlers), "*"),
 	)
 	return &handler.Handlers{}, nil
