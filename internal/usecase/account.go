@@ -6,10 +6,6 @@ import (
 	"github.com/cockroachdb/errors"
 )
 
-const (
-	errMsgAccountUsecase string = "account usecase: %w"
-)
-
 type AccountUsecase struct {
 	repo IAccountRepository
 }
@@ -43,7 +39,7 @@ func (u *AccountUsecase) Create(in *AccountCreateInput) (*AccountCreateOutput, e
 		Name: account.AccountName(in.Name),
 	})
 	if err != nil {
-		return nil, errors.Errorf(errMsgAccountUsecase, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return (*AccountCreateOutput)(createAccountFromDTO(ac.DTO())), nil
@@ -58,7 +54,7 @@ type AccountGetOutput Account
 func (u *AccountUsecase) Get(in *AccountGetInput) (*AccountGetOutput, error) {
 	ac, err := account.NewAccountService(u.repo).Get(account.AccountID(in.ID))
 	if err != nil {
-		return nil, errors.Errorf(errMsgAccountUsecase, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return (*AccountGetOutput)(createAccountFromDTO(ac.DTO())), nil
@@ -74,7 +70,7 @@ func (u *AccountUsecase) Update(in *AccountUpdateInput) (*AccountUpdateOutput, e
 		Name: account.AccountName(in.Name),
 	})
 	if err != nil {
-		return nil, errors.Errorf(errMsgAccountUsecase, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return (*AccountUpdateOutput)(createAccountFromDTO(ac.DTO())), nil
@@ -86,7 +82,7 @@ type AccountDeleteInput struct {
 
 func (u *AccountUsecase) Delete(in *AccountDeleteInput) error {
 	if err := account.NewAccountService(u.repo).Delete(account.AccountID(in.ID)); err != nil {
-		return errors.Errorf(errMsgAccountUsecase, err)
+		return errors.WithStack(err)
 	}
 
 	return nil

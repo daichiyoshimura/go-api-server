@@ -23,6 +23,8 @@ func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
 		ID: id,
 	})
 	if err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusInternalServerError, &server.Error{
 			Message: err.Error(),
 		})
@@ -37,6 +39,8 @@ func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
 func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 	var req server.PostAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusBadRequest, &server.Error{
 			Message: err.Error(),
 		})
@@ -46,6 +50,8 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 		Name: req.Name,
 	})
 	if err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusInternalServerError, &server.Error{
 			Message: err.Error(),
 		})
@@ -59,6 +65,8 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 	var req server.PutAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusBadRequest, &server.Error{
 			Message: err.Error(),
 		})
@@ -69,6 +77,8 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 		Name: req.Name,
 	})
 	if err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusInternalServerError, &server.Error{
 			Message: err.Error(),
 		})
@@ -84,6 +94,8 @@ func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
 		ID: id,
 	})
 	if err != nil {
+		writeLog(ctx, err)
+
 		return ctx.JSON(http.StatusInternalServerError, &server.Error{
 			Message: err.Error(),
 		})

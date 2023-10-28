@@ -27,7 +27,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	server.RegisterHandlersWithBaseURL(e, handlers, "")
+	server.RegisterHandlersWithBaseURL(e, handlers, srvEnv.Host())
 
 	if err := e.Start(srvEnv.Host()); err != nil {
 		e.Logger.Fatal(err)

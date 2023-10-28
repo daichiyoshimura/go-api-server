@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	errMsgAccountRepository string = "account repository: %w"
-	errMsgEmptyTarget       string = "command trget does not exist: %w"
+	errMsgEmptyTarget string = "command trget does not exist: %w"
 )
 
 type AccountRepository struct {
@@ -33,7 +32,7 @@ func (r *AccountRepository) Get(id account.AccountID) (*account.AccountDTO, erro
 	}
 
 	if err := r.conn.NewSelect().Model(ac).WherePK().Scan(ctx); err != nil {
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return ac.DTO(), nil
@@ -45,29 +44,29 @@ func (r *AccountRepository) Create(in *account.AccountDTO) (*account.AccountDTO,
 
 	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	res, err := tx.NewInsert().Model(ac).Exec(ctx)
 	if err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	if txerr := tx.Commit(); txerr != nil {
-		return nil, errors.Errorf(errMsgAccountRepository, txerr)
+		return nil, errors.WithStack(err)
 	}
 
 	ac.ID = id
@@ -81,38 +80,38 @@ func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO,
 
 	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	if err := tx.NewSelect().Model(ac).WherePK().For("UPDATE").Scan(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	res, err := tx.NewUpdate().Model(ac).WherePK().Exec(ctx)
 	if err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	affected, err := res.RowsAffected()
 	if err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	if affected == 0 {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
 		return nil, errors.Newf(errMsgEmptyTarget, in.ID)
@@ -120,10 +119,10 @@ func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO,
 
 	if err := tx.Commit(); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.Errorf(errMsgAccountRepository, txerr)
+			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Errorf(errMsgAccountRepository, err)
+		return nil, errors.WithStack(err)
 	}
 
 	return ac.DTO(), nil
@@ -137,27 +136,27 @@ func (r *AccountRepository) Delete(id account.AccountID) error {
 
 	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
-		return errors.Errorf(errMsgAccountRepository, err)
+		return errors.WithStack(err)
 	}
 
 	if err := tx.NewSelect().Model(ac).WherePK().For("UPDATE").Scan(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return errors.Errorf(errMsgAccountRepository, txerr)
+			return errors.WithStack(err)
 		}
 
-		return errors.Errorf(errMsgAccountRepository, err)
+		return errors.WithStack(err)
 	}
 
 	if err := tx.NewDelete().Model(ac).WherePK().Scan(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
-			return errors.Errorf(errMsgAccountRepository, txerr)
+			return errors.WithStack(err)
 		}
 
-		return errors.Errorf(errMsgAccountRepository, err)
+		return errors.WithStack(err)
 	}
 
 	if err := tx.Commit(); err != nil {
-		return errors.Errorf(errMsgAccountRepository, err)
+		return errors.WithStack(err)
 	}
 
 	return nil
