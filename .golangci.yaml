@@ -17,8 +17,10 @@ linters:
     - revive
     - varnamelen
     - exhaustruct
+    - gofumpt
+    - gci
   skip-files:
-    - ".*\\_gen\\.go"
+    - ".*gen.go"
 linters-settings:
   wrapcheck:
     ignoreSigs:

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"awsomeapp/internal/domain/account"
+
 	"github.com/cockroachdb/errors"
 )
 
