@@ -5,10 +5,6 @@
 - loose coupling
 - easily 
 
-## Architecture
-
-this is designed with modula monolith in mind.
-
 ## Technical Stack
 
 | Category | Selected | URL |
