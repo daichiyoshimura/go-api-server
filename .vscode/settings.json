@@ -1,5 +1,5 @@
 {
-    "go.lintOnSave": "package",
+    "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint",
     "go.buildFlags": [
         "-tags=wireinject"

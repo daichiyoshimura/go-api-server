@@ -21,3 +21,9 @@ lint:
 .PHONY: run
 run:
 	STAGE=DEV go run cmd/server/main.go
+
+# mockgen repository FileName=${}
+MOCKGEN_DIR=internal/module/account/internal/domain
+.PHONY: mockgen
+mockgen:
+	mockgen -source=${MOCKGEN_DIR}/${FILE_NAME}.go -destination=${MOCKGEN_DIR}/mock/${FILE_NAME}_mock.go -package=mock

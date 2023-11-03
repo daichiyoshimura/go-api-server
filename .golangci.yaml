@@ -19,6 +19,9 @@ linters:
     - exhaustruct
     - gofumpt
     - gci
+    - paralleltest
+    - funlen
+    - dupl
   skip-files:
     - ".*gen.go"
 linters-settings:
