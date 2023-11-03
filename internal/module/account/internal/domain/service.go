@@ -20,12 +20,7 @@ func (s *AccountService) Get(id AccountID) (*AccountEntity, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	entity, err := NewAccountEntity(ac)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return entity, nil
+	return NewAccountEntity(ac), nil
 }
 
 func (s *AccountService) Create(in *AccountCreateDTO) (*AccountEntity, error) {
@@ -34,12 +29,7 @@ func (s *AccountService) Create(in *AccountCreateDTO) (*AccountEntity, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	entity, err := NewAccountEntity(ac)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return entity, nil
+	return NewAccountEntity(ac), nil
 }
 
 func (s *AccountService) Update(in *AccountDTO) (*AccountEntity, error) {
@@ -48,12 +38,7 @@ func (s *AccountService) Update(in *AccountDTO) (*AccountEntity, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	entity, err := NewAccountEntity(ac)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return entity, nil
+	return NewAccountEntity(ac), nil
 }
 
 func (s *AccountService) Delete(id AccountID) error {

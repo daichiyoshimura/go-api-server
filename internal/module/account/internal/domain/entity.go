@@ -18,11 +18,11 @@ type AccountCreateDTO struct {
 	Name AccountName
 }
 
-func NewAccountEntity(dto *AccountDTO) (*AccountEntity, error) {
+func NewAccountEntity(dto *AccountDTO) *AccountEntity {
 	return &AccountEntity{
 		id:   dto.ID,
 		name: dto.Name,
-	}, nil
+	}
 }
 
 func (e *AccountEntity) DTO() *AccountDTO {

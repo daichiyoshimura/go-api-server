@@ -15,7 +15,7 @@ import (
 func TestAccountService_Get(t *testing.T) {
 	id := domain.AccountID(10)
 
-	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
+	entity := domain.NewAccountEntity(&domain.AccountDTO{
 		ID:   id,
 		Name: "John Smith",
 	})
@@ -94,7 +94,7 @@ func TestAccountService_Create(t *testing.T) {
 		Name: name,
 	}
 	id := domain.AccountID(10)
-	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
+	entity := domain.NewAccountEntity(&domain.AccountDTO{
 		ID:   id,
 		Name: name,
 	})
@@ -173,7 +173,7 @@ func TestAccountService_Update(t *testing.T) {
 		Name: name,
 	}
 	id := domain.AccountID(10)
-	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
+	entity := domain.NewAccountEntity(&domain.AccountDTO{
 		ID:   id,
 		Name: name,
 	})
