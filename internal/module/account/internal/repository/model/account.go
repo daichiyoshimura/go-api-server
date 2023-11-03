@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"awsomeapp/internal/domain/account"
+	"awsomeapp/internal/module/account/internal/domain"
 
 	"github.com/uptrace/bun"
 )
@@ -17,16 +17,16 @@ type Account struct {
 	DeletedAt     time.Time `bun:",soft_delete,nullzero"`
 }
 
-func CreateAccountFromDTO(dto *account.AccountDTO) *Account {
+func CreateAccountFromDTO(dto *domain.AccountDTO) *Account {
 	return &Account{
 		ID:   int64(*dto.ID),
 		Name: string(dto.Name),
 	}
 }
 
-func (a *Account) DTO() *account.AccountDTO {
-	return &account.AccountDTO{
-		ID:   (*account.AccountID)(&a.ID),
-		Name: account.AccountName(a.Name),
+func (a *Account) DTO() *domain.AccountDTO {
+	return &domain.AccountDTO{
+		ID:   (*domain.AccountID)(&a.ID),
+		Name: domain.AccountName(a.Name),
 	}
 }

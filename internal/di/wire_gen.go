@@ -8,15 +8,13 @@ package di
 
 import (
 	"awsomeapp/internal/handler"
-	"awsomeapp/internal/repository"
 	"github.com/uptrace/bun"
 )
 
 // Injectors from wire.go:
 
 func Wire(db *bun.DB) (*handler.Handlers, error) {
-	accountRepository := repository.NewAccountRepository(db)
-	accountHandler := handler.NewAccountHandler(accountRepository)
+	accountHandler := handler.NewAccountHandler(db)
 	handlers := &handler.Handlers{
 		AccountHandler: accountHandler,
 	}

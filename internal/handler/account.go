@@ -1,25 +1,26 @@
 package handler
 
 import (
+	"awsomeapp/internal/module/account"
 	"awsomeapp/internal/server"
-	"awsomeapp/internal/usecase"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/uptrace/bun"
 )
 
 type AccountHandler struct {
-	repo IAccountRepository
+	db bun.IDB
 }
 
-func NewAccountHandler(repo IAccountRepository) *AccountHandler {
+func NewAccountHandler(db bun.IDB) *AccountHandler {
 	return &AccountHandler{
-		repo: repo,
+		db: db,
 	}
 }
 
 func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
-	out, err := usecase.NewAccountUsecase(h.repo).Get(&usecase.AccountGetInput{
+	out, err := account.NewAccountUsecase(h.db).Get(&account.AccountGetInput{
 		ID: id,
 	})
 	if err != nil {
@@ -46,7 +47,7 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 		})
 	}
 
-	out, err := usecase.NewAccountUsecase(h.repo).Create(&usecase.AccountCreateInput{
+	out, err := account.NewAccountUsecase(h.db).Create(&account.AccountCreateInput{
 		Name: req.Name,
 	})
 	if err != nil {
@@ -72,7 +73,7 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 		})
 	}
 
-	out, err := usecase.NewAccountUsecase(h.repo).Update(&usecase.AccountUpdateInput{
+	out, err := account.NewAccountUsecase(h.db).Update(&account.AccountUpdateInput{
 		ID:   req.Id,
 		Name: req.Name,
 	})
@@ -90,7 +91,7 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 }
 
 func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
-	err := usecase.NewAccountUsecase(h.repo).Delete(&usecase.AccountDeleteInput{
+	err := account.NewAccountUsecase(h.db).Delete(&account.AccountDeleteInput{
 		ID: id,
 	})
 	if err != nil {

@@ -1,18 +1,20 @@
-package usecase
+package account
 
 import (
-	"awsomeapp/internal/domain/account"
+	"awsomeapp/internal/module/account/internal/domain"
+	"awsomeapp/internal/module/account/internal/repository"
 
 	"github.com/cockroachdb/errors"
+	"github.com/uptrace/bun"
 )
 
 type AccountUsecase struct {
-	repo IAccountRepository
+	db bun.IDB
 }
 
-func NewAccountUsecase(repo IAccountRepository) *AccountUsecase {
+func NewAccountUsecase(db bun.IDB) *AccountUsecase {
 	return &AccountUsecase{
-		repo: repo,
+		db: db,
 	}
 }
 
@@ -21,7 +23,7 @@ type Account struct {
 	Name string
 }
 
-func createAccountFromDTO(dto *account.AccountDTO) *Account {
+func createAccountFromDTO(dto *domain.AccountDTO) *Account {
 	return &Account{
 		ID:   int64(*dto.ID),
 		Name: string(dto.Name),
@@ -35,9 +37,11 @@ type AccountCreateInput struct {
 type AccountCreateOutput Account
 
 func (u *AccountUsecase) Create(in *AccountCreateInput) (*AccountCreateOutput, error) {
-	ac, err := account.NewAccountService(u.repo).Create(&account.AccountDTO{
-		Name: account.AccountName(in.Name),
+	accountRepo := repository.NewAccountRepository(u.db)
+	ac, err := domain.NewAccountService(accountRepo).Create(&domain.AccountDTO{
+		Name: domain.AccountName(in.Name),
 	})
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -52,7 +56,9 @@ type AccountGetInput struct {
 type AccountGetOutput Account
 
 func (u *AccountUsecase) Get(in *AccountGetInput) (*AccountGetOutput, error) {
-	ac, err := account.NewAccountService(u.repo).Get(account.AccountID(in.ID))
+	accountRepo := repository.NewAccountRepository(u.db)
+	ac, err := domain.NewAccountService(accountRepo).Get(domain.AccountID(in.ID))
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -65,10 +71,12 @@ type AccountUpdateInput Account
 type AccountUpdateOutput Account
 
 func (u *AccountUsecase) Update(in *AccountUpdateInput) (*AccountUpdateOutput, error) {
-	ac, err := account.NewAccountService(u.repo).Update(&account.AccountDTO{
-		ID:   (*account.AccountID)(&in.ID),
-		Name: account.AccountName(in.Name),
+	accountRepo := repository.NewAccountRepository(u.db)
+	ac, err := domain.NewAccountService(accountRepo).Update(&domain.AccountDTO{
+		ID:   (*domain.AccountID)(&in.ID),
+		Name: domain.AccountName(in.Name),
 	})
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -81,7 +89,8 @@ type AccountDeleteInput struct {
 }
 
 func (u *AccountUsecase) Delete(in *AccountDeleteInput) error {
-	if err := account.NewAccountService(u.repo).Delete(account.AccountID(in.ID)); err != nil {
+	accountRepo := repository.NewAccountRepository(u.db)
+	if err := domain.NewAccountService(accountRepo).Delete(domain.AccountID(in.ID)); err != nil {
 		return errors.WithStack(err)
 	}
 

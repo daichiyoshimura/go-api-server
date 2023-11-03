@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"awsomeapp/internal/domain/account"
-	"awsomeapp/internal/repository/model"
+	"awsomeapp/internal/module/account/internal/domain"
+	"awsomeapp/internal/module/account/internal/repository/model"
 
 	"github.com/cockroachdb/errors"
 	"github.com/uptrace/bun"
@@ -25,7 +25,7 @@ func NewAccountRepository(conn bun.IDB) *AccountRepository {
 	}
 }
 
-func (r *AccountRepository) Get(id account.AccountID) (*account.AccountDTO, error) {
+func (r *AccountRepository) Get(id domain.AccountID) (*domain.AccountDTO, error) {
 	ctx := context.Background()
 	ac := &model.Account{
 		ID: int64(id),
@@ -38,7 +38,7 @@ func (r *AccountRepository) Get(id account.AccountID) (*account.AccountDTO, erro
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Create(in *account.AccountDTO) (*account.AccountDTO, error) {
+func (r *AccountRepository) Create(in *domain.AccountDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
 	ac := model.CreateAccountFromDTO(in)
 
@@ -74,7 +74,7 @@ func (r *AccountRepository) Create(in *account.AccountDTO) (*account.AccountDTO,
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO, error) {
+func (r *AccountRepository) Update(in *domain.AccountDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
 	ac := model.CreateAccountFromDTO(in)
 
@@ -128,7 +128,7 @@ func (r *AccountRepository) Update(in *account.AccountDTO) (*account.AccountDTO,
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Delete(id account.AccountID) error {
+func (r *AccountRepository) Delete(id domain.AccountID) error {
 	ctx := context.Background()
 	ac := &model.Account{
 		ID: int64(id),
