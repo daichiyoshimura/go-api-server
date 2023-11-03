@@ -16,7 +16,7 @@ func TestAccountService_Get(t *testing.T) {
 	id := domain.AccountID(10)
 
 	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
-		ID:   &id,
+		ID:   id,
 		Name: "John Smith",
 	})
 	ctrl := gomock.NewController(t)
@@ -90,12 +90,12 @@ func TestAccountService_Get(t *testing.T) {
 
 func TestAccountService_Create(t *testing.T) {
 	name := domain.AccountName("John Smith")
-	dto := &domain.AccountDTO{
+	dto := &domain.AccountCreateDTO{
 		Name: name,
 	}
 	id := domain.AccountID(10)
 	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
-		ID:   &id,
+		ID:   id,
 		Name: name,
 	})
 	ctrl := gomock.NewController(t)
@@ -109,7 +109,7 @@ func TestAccountService_Create(t *testing.T) {
 	}
 
 	type args struct {
-		in *domain.AccountDTO
+		in *domain.AccountCreateDTO
 	}
 
 	tests := []struct {
@@ -174,7 +174,7 @@ func TestAccountService_Update(t *testing.T) {
 	}
 	id := domain.AccountID(10)
 	entity, _ := domain.NewAccountEntity(&domain.AccountDTO{
-		ID:   &id,
+		ID:   id,
 		Name: name,
 	})
 	ctrl := gomock.NewController(t)
@@ -294,7 +294,7 @@ func TestAccountService_Delete(t *testing.T) {
 			args: args{
 				id: id,
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

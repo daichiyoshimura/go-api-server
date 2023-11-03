@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	errMsgEmptyTarget string = "command trget does not exist: %w"
+	errMsgEmptyTarget string = "command target does not exist: %w"
 )
 
 type AccountRepository struct {
@@ -38,9 +38,9 @@ func (r *AccountRepository) Get(id domain.AccountID) (*domain.AccountDTO, error)
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Create(in *domain.AccountDTO) (*domain.AccountDTO, error) {
+func (r *AccountRepository) Create(in *domain.AccountCreateDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := model.CreateAccountFromDTO(in)
+	ac := model.CreateAccountFromCreateDTO(in)
 
 	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {

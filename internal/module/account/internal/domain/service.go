@@ -28,7 +28,7 @@ func (s *AccountService) Get(id AccountID) (*AccountEntity, error) {
 	return entity, nil
 }
 
-func (s *AccountService) Create(in *AccountDTO) (*AccountEntity, error) {
+func (s *AccountService) Create(in *AccountCreateDTO) (*AccountEntity, error) {
 	ac, err := s.repo.Create(in)
 	if err != nil {
 		return nil, errors.WithStack(err)

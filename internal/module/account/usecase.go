@@ -25,7 +25,7 @@ type Account struct {
 
 func createAccountFromDTO(dto *domain.AccountDTO) *Account {
 	return &Account{
-		ID:   int64(*dto.ID),
+		ID:   int64(dto.ID),
 		Name: string(dto.Name),
 	}
 }
@@ -38,7 +38,7 @@ type AccountCreateOutput Account
 
 func (u *AccountUsecase) Create(in *AccountCreateInput) (*AccountCreateOutput, error) {
 	accountRepo := repository.NewAccountRepository(u.db)
-	ac, err := domain.NewAccountService(accountRepo).Create(&domain.AccountDTO{
+	ac, err := domain.NewAccountService(accountRepo).Create(&domain.AccountCreateDTO{
 		Name: domain.AccountName(in.Name),
 	})
 
@@ -73,7 +73,7 @@ type AccountUpdateOutput Account
 func (u *AccountUsecase) Update(in *AccountUpdateInput) (*AccountUpdateOutput, error) {
 	accountRepo := repository.NewAccountRepository(u.db)
 	ac, err := domain.NewAccountService(accountRepo).Update(&domain.AccountDTO{
-		ID:   (*domain.AccountID)(&in.ID),
+		ID:   domain.AccountID(in.ID),
 		Name: domain.AccountName(in.Name),
 	})
 

@@ -39,7 +39,7 @@ func (m *MockIAccountRepository) EXPECT() *MockIAccountRepositoryMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockIAccountRepository) Create(in *domain.AccountDTO) (*domain.AccountDTO, error) {
+func (m *MockIAccountRepository) Create(in *domain.AccountCreateDTO) (*domain.AccountDTO, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", in)
 	ret0, _ := ret[0].(*domain.AccountDTO)

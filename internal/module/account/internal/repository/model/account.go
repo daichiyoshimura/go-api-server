@@ -19,14 +19,20 @@ type Account struct {
 
 func CreateAccountFromDTO(dto *domain.AccountDTO) *Account {
 	return &Account{
-		ID:   int64(*dto.ID),
+		ID:   int64(dto.ID),
+		Name: string(dto.Name),
+	}
+}
+
+func CreateAccountFromCreateDTO(dto *domain.AccountCreateDTO) *Account {
+	return &Account{
 		Name: string(dto.Name),
 	}
 }
 
 func (a *Account) DTO() *domain.AccountDTO {
 	return &domain.AccountDTO{
-		ID:   (*domain.AccountID)(&a.ID),
+		ID:   domain.AccountID(a.ID),
 		Name: domain.AccountName(a.Name),
 	}
 }
