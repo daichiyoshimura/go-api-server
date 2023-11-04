@@ -4,18 +4,22 @@
 //go:build !wireinject
 // +build !wireinject
 
-package di
+package handler
 
 import (
-	"awsomeapp/internal/handler"
+	"awsomeapp/internal/module/account"
 	"github.com/uptrace/bun"
 )
 
 // Injectors from wire.go:
 
-func Wire(db *bun.DB) (*handler.Handlers, error) {
-	accountHandler := handler.NewAccountHandler(db)
-	handlers := &handler.Handlers{
+func Wire(db *bun.DB) (*Handlers, error) {
+	accountUsecase, err := account.Wire(db)
+	if err != nil {
+		return nil, err
+	}
+	accountHandler := NewAccountHandler(accountUsecase)
+	handlers := &Handlers{
 		AccountHandler: accountHandler,
 	}
 	return handlers, nil

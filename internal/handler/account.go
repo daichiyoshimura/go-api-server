@@ -6,23 +6,20 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/uptrace/bun"
 )
 
 type AccountHandler struct {
-	db bun.IDB
+	usecase IAccountUsecase
 }
 
-func NewAccountHandler(db bun.IDB) *AccountHandler {
+func NewAccountHandler(usecase IAccountUsecase) *AccountHandler {
 	return &AccountHandler{
-		db: db,
+		usecase: usecase,
 	}
 }
 
 func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
-	db, _ := h.db.(*bun.DB)
-	usecase, _ := account.Wire(db)
-	out, err := usecase.Get(&account.AccountGetInput{
+	out, err := h.usecase.Get(&account.AccountGetInput{
 		ID: id,
 	})
 
@@ -50,9 +47,7 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 		})
 	}
 
-	db, _ := h.db.(*bun.DB)
-	usecase, _ := account.Wire(db)
-	out, err := usecase.Create(&account.AccountCreateInput{
+	out, err := h.usecase.Create(&account.AccountCreateInput{
 		Name: req.Name,
 	})
 
@@ -79,9 +74,7 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 		})
 	}
 
-	db, _ := h.db.(*bun.DB)
-	usecase, _ := account.Wire(db)
-	out, err := usecase.Update(&account.AccountUpdateInput{
+	out, err := h.usecase.Update(&account.AccountUpdateInput{
 		ID:   req.Id,
 		Name: req.Name,
 	})
@@ -100,9 +93,7 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 }
 
 func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
-	db, _ := h.db.(*bun.DB)
-	usecase, _ := account.Wire(db)
-	err := usecase.Delete(&account.AccountDeleteInput{
+	err := h.usecase.Delete(&account.AccountDeleteInput{
 		ID: id,
 	})
 

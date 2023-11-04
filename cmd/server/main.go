@@ -2,8 +2,8 @@ package main
 
 import (
 	"awsomeapp/internal/db"
-	"awsomeapp/internal/di"
 	"awsomeapp/internal/env"
+	"awsomeapp/internal/handler"
 	"awsomeapp/internal/server"
 
 	"github.com/labstack/echo/v4"
@@ -22,7 +22,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	handlers, err := di.Wire(db)
+	handlers, err := handler.Wire(db)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}

@@ -8,9 +8,10 @@ openapi:
 
 # generate wire_gen.go
 WIRE_USECASE_DIR=internal/module/account
+WIRE_HANDLER_DIR=internal/handler
 .PHONY: wire
 wire:
-	wire internal/di/wire.go
+	wire ${WIRE_HANDLER_DIR}/wire.go ${WIRE_HANDLER_DIR}/account.go ${WIRE_HANDLER_DIR}/iAccountUsecase.go ${WIRE_HANDLER_DIR}/handlers.go ${WIRE_HANDLER_DIR}/log.go
 	wire ${WIRE_USECASE_DIR}/wire.go ${WIRE_USECASE_DIR}/usecase.go ${WIRE_USECASE_DIR}/iAccountRepo.go
 
 # golangci-lint
