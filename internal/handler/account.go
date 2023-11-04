@@ -20,9 +20,12 @@ func NewAccountHandler(db bun.IDB) *AccountHandler {
 }
 
 func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
-	out, err := account.NewAccountUsecase(h.db).Get(&account.AccountGetInput{
+	db, _ := h.db.(*bun.DB)
+	usecase, _ := account.Wire(db)
+	out, err := usecase.Get(&account.AccountGetInput{
 		ID: id,
 	})
+
 	if err != nil {
 		writeLog(ctx, err)
 
@@ -47,9 +50,12 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 		})
 	}
 
-	out, err := account.NewAccountUsecase(h.db).Create(&account.AccountCreateInput{
+	db, _ := h.db.(*bun.DB)
+	usecase, _ := account.Wire(db)
+	out, err := usecase.Create(&account.AccountCreateInput{
 		Name: req.Name,
 	})
+
 	if err != nil {
 		writeLog(ctx, err)
 
@@ -73,10 +79,13 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 		})
 	}
 
-	out, err := account.NewAccountUsecase(h.db).Update(&account.AccountUpdateInput{
+	db, _ := h.db.(*bun.DB)
+	usecase, _ := account.Wire(db)
+	out, err := usecase.Update(&account.AccountUpdateInput{
 		ID:   req.Id,
 		Name: req.Name,
 	})
+
 	if err != nil {
 		writeLog(ctx, err)
 
@@ -91,9 +100,12 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 }
 
 func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
-	err := account.NewAccountUsecase(h.db).Delete(&account.AccountDeleteInput{
+	db, _ := h.db.(*bun.DB)
+	usecase, _ := account.Wire(db)
+	err := usecase.Delete(&account.AccountDeleteInput{
 		ID: id,
 	})
+
 	if err != nil {
 		writeLog(ctx, err)
 

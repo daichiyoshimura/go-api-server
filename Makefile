@@ -7,9 +7,11 @@ openapi:
 	oapi-codegen -generate "client" -package api openapi.yaml > ./api/client.gen.go
 
 # generate wire_gen.go
+WIRE_USECASE_DIR=internal/module/account
 .PHONY: wire
 wire:
 	wire internal/di/wire.go
+	wire ${WIRE_USECASE_DIR}/wire.go ${WIRE_USECASE_DIR}/usecase.go ${WIRE_USECASE_DIR}/iAccountRepo.go
 
 # golangci-lint
 .PHONY: lint

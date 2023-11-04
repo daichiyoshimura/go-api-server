@@ -2,19 +2,17 @@ package account
 
 import (
 	"awsomeapp/internal/module/account/internal/domain"
-	"awsomeapp/internal/module/account/internal/repository"
 
 	"github.com/cockroachdb/errors"
-	"github.com/uptrace/bun"
 )
 
 type AccountUsecase struct {
-	db bun.IDB
+	repo IAccountRepository
 }
 
-func NewAccountUsecase(db bun.IDB) *AccountUsecase {
+func NewAccountUsecase(repo IAccountRepository) *AccountUsecase {
 	return &AccountUsecase{
-		db: db,
+		repo: repo,
 	}
 }
 
@@ -37,8 +35,7 @@ type AccountCreateInput struct {
 type AccountCreateOutput Account
 
 func (u *AccountUsecase) Create(in *AccountCreateInput) (*AccountCreateOutput, error) {
-	accountRepo := repository.NewAccountRepository(u.db)
-	ac, err := domain.NewAccountService(accountRepo).Create(&domain.AccountCreateDTO{
+	ac, err := domain.NewAccountService(u.repo).Create(&domain.AccountCreateDTO{
 		Name: domain.AccountName(in.Name),
 	})
 
@@ -56,8 +53,7 @@ type AccountGetInput struct {
 type AccountGetOutput Account
 
 func (u *AccountUsecase) Get(in *AccountGetInput) (*AccountGetOutput, error) {
-	accountRepo := repository.NewAccountRepository(u.db)
-	ac, err := domain.NewAccountService(accountRepo).Get(domain.AccountID(in.ID))
+	ac, err := domain.NewAccountService(u.repo).Get(domain.AccountID(in.ID))
 
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -71,8 +67,7 @@ type AccountUpdateInput Account
 type AccountUpdateOutput Account
 
 func (u *AccountUsecase) Update(in *AccountUpdateInput) (*AccountUpdateOutput, error) {
-	accountRepo := repository.NewAccountRepository(u.db)
-	ac, err := domain.NewAccountService(accountRepo).Update(&domain.AccountDTO{
+	ac, err := domain.NewAccountService(u.repo).Update(&domain.AccountDTO{
 		ID:   domain.AccountID(in.ID),
 		Name: domain.AccountName(in.Name),
 	})
@@ -89,8 +84,7 @@ type AccountDeleteInput struct {
 }
 
 func (u *AccountUsecase) Delete(in *AccountDeleteInput) error {
-	accountRepo := repository.NewAccountRepository(u.db)
-	if err := domain.NewAccountService(accountRepo).Delete(domain.AccountID(in.ID)); err != nil {
+	if err := domain.NewAccountService(u.repo).Delete(domain.AccountID(in.ID)); err != nil {
 		return errors.WithStack(err)
 	}
 

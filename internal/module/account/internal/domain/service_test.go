@@ -2,7 +2,7 @@ package domain_test
 
 import (
 	"awsomeapp/internal/module/account/internal/domain"
-	"awsomeapp/internal/module/account/internal/domain/mock"
+	"awsomeapp/internal/module/account/internal/repository/mock"
 
 	"reflect"
 	"testing"
