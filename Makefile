@@ -6,12 +6,16 @@ openapi:
 	oapi-codegen -generate "types" -package api openapi.yaml > ./api/types.gen.go
 	oapi-codegen -generate "client" -package api openapi.yaml > ./api/client.gen.go
 
-# generate wire_gen.go
-WIRE_USECASE_DIR=internal/module/account
+# wire
 WIRE_HANDLER_DIR=internal/handler
-.PHONY: wire
-wire:
+.PHONY: wire-handler
+wire-handler:
 	wire ${WIRE_HANDLER_DIR}/wire.go ${WIRE_HANDLER_DIR}/account.go ${WIRE_HANDLER_DIR}/iAccountUsecase.go ${WIRE_HANDLER_DIR}/handlers.go ${WIRE_HANDLER_DIR}/log.go
+
+# wire
+WIRE_USECASE_DIR=internal/module/account
+.PHONY: wire-account
+wire-usecase:
 	wire ${WIRE_USECASE_DIR}/wire.go ${WIRE_USECASE_DIR}/usecase.go ${WIRE_USECASE_DIR}/iAccountRepo.go
 
 # golangci-lint

@@ -8,7 +8,10 @@ package account
 
 import (
 	"awsomeapp/internal/module/account/internal/repository"
+	"awsomeapp/internal/module/account/internal/repository/mock"
 	"github.com/uptrace/bun"
+	"go.uber.org/mock/gomock"
+	"testing"
 )
 
 // Injectors from wire.go:
@@ -17,4 +20,17 @@ func Wire(db *bun.DB) (*AccountUsecase, error) {
 	accountRepository := repository.NewAccountRepository(db)
 	accountUsecase := NewAccountUsecase(accountRepository)
 	return accountUsecase, nil
+}
+
+func WireMock(t *testing.T) (*AccountUsecase, error) {
+	controller := provideMockController(t)
+	mockIAccountRepository := mock.NewMockIAccountRepository(controller)
+	accountUsecase := NewAccountUsecase(mockIAccountRepository)
+	return accountUsecase, nil
+}
+
+// wire.go:
+
+func provideMockController(t gomock.TestReporter) *gomock.Controller {
+	return gomock.NewController(t)
 }
