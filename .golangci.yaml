@@ -22,6 +22,9 @@ linters:
     - paralleltest
     - funlen
     - dupl
+    - wsl
+    - testpackage
+    - nlreturn
   skip-files:
     - ".*gen.go"
 linters-settings:

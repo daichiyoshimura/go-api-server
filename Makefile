@@ -1,3 +1,7 @@
+APP_NAME=awsomeapp
+ACCOUNT_DIR=internal/module/account
+
+
 # oapi-codegen
 .PHONY: openapi
 openapi:
@@ -29,8 +33,8 @@ lint:
 run:
 	STAGE=DEV go run cmd/server/main.go
 
-# mockgen repository FileName=${}
-MOCKGEN_DIR=internal/module/account/internal/domain
-.PHONY: mockgen
-mockgen:
-	mockgen -source=${MOCKGEN_DIR}/${FILE_NAME}.go -destination=${MOCKGEN_DIR}/mock/${FILE_NAME}_mock.go -package=mock
+# mockgen account
+ACCOUNT_DOMAIN_DIR = ${ACCOUNT_DIR}/internal/domain
+.PHONY: mockgen-account
+mockgen-account:
+	mockgen -source=${ACCOUNT_DOMAIN_DIR}/iRepo.go -destination=${ACCOUNT_DOMAIN_DIR}/Repo_mock.go -package=domain -self_package=${APP_NAME}/${ACCOUNT_DOMAIN_DIR}

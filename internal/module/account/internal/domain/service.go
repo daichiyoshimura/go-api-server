@@ -5,43 +5,58 @@ import (
 )
 
 type AccountService struct {
-	repo IAccountRepository
+	repo iAccountRepository
 }
 
-func NewAccountService(repo IAccountRepository) *AccountService {
+func NewAccountService(repo iAccountRepository) *AccountService {
 	return &AccountService{
 		repo: repo,
 	}
 }
 
-func (s *AccountService) Get(id AccountID) (*AccountEntity, error) {
-	ac, err := s.repo.Get(id)
+func (s *AccountService) Get(id int64) (*AccountEntity, error) {
+	acDTO, err := s.repo.Get(id)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return NewAccountEntity(ac), nil
-}
-
-func (s *AccountService) Create(in *AccountCreateDTO) (*AccountEntity, error) {
-	ac, err := s.repo.Create(in)
+	ac, err := NewAccountEntity(acDTO)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return NewAccountEntity(ac), nil
+	return ac, nil
 }
 
-func (s *AccountService) Update(in *AccountDTO) (*AccountEntity, error) {
-	ac, err := s.repo.Update(in)
+func (s *AccountService) Create(dto *AccountUnspecifiedDTO) (*AccountEntity, error) {
+	acDTO, err := s.repo.Create(dto)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return NewAccountEntity(ac), nil
+	ac, err := NewAccountEntity(acDTO)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return ac, nil
 }
 
-func (s *AccountService) Delete(id AccountID) error {
+func (s *AccountService) Update(dto *AccountDTO) (*AccountEntity, error) {
+	acDTO, err := s.repo.Update(dto)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	ac, err := NewAccountEntity(acDTO)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return ac, nil
+}
+
+func (s *AccountService) Delete(id int64) error {
 	if err := s.repo.Delete(id); err != nil {
 		return errors.WithStack(err)
 	}

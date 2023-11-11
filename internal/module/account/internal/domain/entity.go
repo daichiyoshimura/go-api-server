@@ -1,33 +1,42 @@
 package domain
 
-type AccountID int64
+import (
+	"awsomeapp/internal/module/account/internal/domain/value"
 
-type AccountName string
+	"github.com/cockroachdb/errors"
+)
 
+// TODO make id uuid
 type AccountEntity struct {
-	id   AccountID
-	name AccountName
+	id   int64
+	name *value.AccountName
 }
 
 type AccountDTO struct {
-	ID   AccountID
-	Name AccountName
+	ID   int64
+	Name string
 }
 
-type AccountCreateDTO struct {
-	Name AccountName
+type AccountUnspecifiedDTO struct {
+	Name string
 }
 
-func NewAccountEntity(dto *AccountDTO) *AccountEntity {
+func NewAccountEntity(dto *AccountDTO) (*AccountEntity, error) {
+
+	name, err := value.NewAccountName(dto.Name)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
 	return &AccountEntity{
 		id:   dto.ID,
-		name: dto.Name,
-	}
+		name: name,
+	}, nil
 }
 
 func (e *AccountEntity) DTO() *AccountDTO {
 	return &AccountDTO{
 		ID:   e.id,
-		Name: e.name,
+		Name: e.name.Value(),
 	}
 }
