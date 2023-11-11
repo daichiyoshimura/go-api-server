@@ -6,7 +6,6 @@ package account
 
 import (
 	"awsomeapp/internal/module/account/internal/repository"
-	"awsomeapp/internal/module/account/internal/repository/mock"
 	"testing"
 
 	"github.com/google/wire"
@@ -18,7 +17,7 @@ func Wire(db *bun.DB) (*AccountUsecase, error) {
 	wire.Build(
 		wire.Bind(new(bun.IDB), new(*bun.DB)),
 		repository.NewAccountRepository,
-		wire.Bind(new(IAccountRepository), new(*repository.AccountRepository)),
+		wire.Bind(new(iAccountRepository), new(*repository.AccountRepository)),
 		NewAccountUsecase,
 	)
 
@@ -29,8 +28,8 @@ func WireMock(t *testing.T) (*AccountUsecase, error) {
 	wire.Build(
 		wire.Bind(new(gomock.TestReporter), new(*testing.T)),
 		provideMockController,
-		mock.NewMockIAccountRepository,
-		wire.Bind(new(IAccountRepository), new(*mock.MockIAccountRepository)),
+		NewMockiAccountRepository,
+		wire.Bind(new(iAccountRepository), new(*MockiAccountRepository)),
 		NewAccountUsecase,
 	)
 
@@ -39,4 +38,4 @@ func WireMock(t *testing.T) (*AccountUsecase, error) {
 
 func provideMockController(t gomock.TestReporter) *gomock.Controller {
 	return gomock.NewController(t)
-} 
+}

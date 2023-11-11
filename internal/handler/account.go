@@ -9,10 +9,10 @@ import (
 )
 
 type AccountHandler struct {
-	usecase IAccountUsecase
+	usecase iAccountUsecase
 }
 
-func NewAccountHandler(usecase IAccountUsecase) *AccountHandler {
+func NewAccountHandler(usecase iAccountUsecase) *AccountHandler {
 	return &AccountHandler{
 		usecase: usecase,
 	}

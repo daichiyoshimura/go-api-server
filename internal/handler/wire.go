@@ -6,18 +6,37 @@ package handler
 
 import (
 	"awsomeapp/internal/module/account"
+	"testing"
 
 	"github.com/google/wire"
 	"github.com/uptrace/bun"
+	gomock "go.uber.org/mock/gomock"
 )
 
 func Wire(db *bun.DB) (*Handlers, error) {
 	wire.Build(
 		account.Wire,
-		wire.Bind(new(IAccountUsecase), new(*account.AccountUsecase)),
+		wire.Bind(new(iAccountUsecase), new(*account.AccountUsecase)),
 		NewAccountHandler,
 		wire.Struct(new(Handlers), "*"),
 	)
 
 	return &Handlers{}, nil
+}
+
+func WireMock(t *testing.T) (*Handlers, error) {
+	wire.Build(
+		wire.Bind(new(gomock.TestReporter), new(*testing.T)),
+		provideMockController,
+		NewMockiAccountUsecase,
+		wire.Bind(new(iAccountUsecase), new(*MockiAccountUsecase)),
+		NewAccountHandler,
+		wire.Struct(new(Handlers), "*"),
+	)
+
+	return &Handlers{}, nil
+}
+
+func provideMockController(t gomock.TestReporter) *gomock.Controller {
+	return gomock.NewController(t)
 }

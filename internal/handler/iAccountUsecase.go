@@ -2,9 +2,9 @@ package handler
 
 import "awsomeapp/internal/module/account"
 
-type IAccountUsecase interface {
-	Create(in *account.AccountCreateInput) (*account.AccountCreateOutput, error)
-	Get(in *account.AccountGetInput) (*account.AccountGetOutput, error)
-	Update(in *account.AccountUpdateInput) (*account.AccountUpdateOutput, error)
+type iAccountUsecase interface {
+	Create(in *account.AccountCreateInput) (*account.Account, error)
+	Get(in *account.AccountGetInput) (*account.Account, error)
+	Update(in *account.AccountUpdateInput) (*account.Account, error)
 	Delete(in *account.AccountDeleteInput) error
 }

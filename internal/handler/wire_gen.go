@@ -9,6 +9,8 @@ package handler
 import (
 	"awsomeapp/internal/module/account"
 	"github.com/uptrace/bun"
+	"go.uber.org/mock/gomock"
+	"testing"
 )
 
 // Injectors from wire.go:
@@ -23,4 +25,20 @@ func Wire(db *bun.DB) (*Handlers, error) {
 		AccountHandler: accountHandler,
 	}
 	return handlers, nil
+}
+
+func WireMock(t *testing.T) (*Handlers, error) {
+	controller := provideMockController(t)
+	mockiAccountUsecase := NewMockiAccountUsecase(controller)
+	accountHandler := NewAccountHandler(mockiAccountUsecase)
+	handlers := &Handlers{
+		AccountHandler: accountHandler,
+	}
+	return handlers, nil
+}
+
+// wire.go:
+
+func provideMockController(t gomock.TestReporter) *gomock.Controller {
+	return gomock.NewController(t)
 }

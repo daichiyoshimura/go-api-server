@@ -8,7 +8,6 @@ package account
 
 import (
 	"awsomeapp/internal/module/account/internal/repository"
-	"awsomeapp/internal/module/account/internal/repository/mock"
 	"github.com/uptrace/bun"
 	"go.uber.org/mock/gomock"
 	"testing"
@@ -24,8 +23,8 @@ func Wire(db *bun.DB) (*AccountUsecase, error) {
 
 func WireMock(t *testing.T) (*AccountUsecase, error) {
 	controller := provideMockController(t)
-	mockIAccountRepository := mock.NewMockIAccountRepository(controller)
-	accountUsecase := NewAccountUsecase(mockIAccountRepository)
+	mockiAccountRepository := NewMockiAccountRepository(controller)
+	accountUsecase := NewAccountUsecase(mockiAccountRepository)
 	return accountUsecase, nil
 }
 
