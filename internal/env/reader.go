@@ -19,10 +19,14 @@ func NewReader() *Reader {
 }
 
 func (r *Reader) Read() (*Server, *DB, error) {
-	stg := NewStage(os.Getenv("STAGE"))
-	if stg.isDev() {
-		if err := godotenv.Load(".env"); err != nil {
-			return nil, nil, errors.Errorf(errMsgEnv, err)
+	stg, err := NewStage(os.Getenv("STAGE"))
+	if err != nil {
+		return nil, nil, errors.WithStack(err)
+	}
+
+	if stg.isDev() || stg.isTest() {
+		if err := godotenv.Load("../../.env"); err != nil {
+			return nil, nil, errors.Newf(errMsgEnv, err)
 		}
 	}
 

@@ -28,8 +28,8 @@ func (s *AccountService) Get(id int64) (*AccountEntity, error) {
 	return ac, nil
 }
 
-func (s *AccountService) Create(dto *AccountUnspecifiedDTO) (*AccountEntity, error) {
-	acDTO, err := s.repo.Create(dto)
+func (s *AccountService) Create(udto *AccountUnspecifiedDTO) (*AccountEntity, error) {
+	acDTO, err := s.repo.Create(udto)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

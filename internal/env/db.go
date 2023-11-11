@@ -1,6 +1,8 @@
 package env
 
-import "github.com/cockroachdb/errors"
+import (
+	"github.com/cockroachdb/errors"
+)
 
 func (r *Reader) db() (*DB, error) {
 	host, err := r.read("DB_HOST")
@@ -8,7 +10,7 @@ func (r *Reader) db() (*DB, error) {
 		return nil, errors.Errorf(errMsgEnv, err)
 	}
 
-	user, err := r.read("DB_HOST")
+	user, err := r.read("DB_USER")
 	if err != nil {
 		return nil, errors.Errorf(errMsgEnv, err)
 	}

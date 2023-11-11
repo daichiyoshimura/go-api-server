@@ -12,37 +12,41 @@ import (
 )
 
 const (
-	errMsgEmptyTarget string = "command target does not exist: %w"
+	sqlUPDATE string = "UPDATE"
+)
+
+const (
+	errEmptyTarget string = "command target does not exist: %w"
 )
 
 type AccountRepository struct {
-	conn bun.IDB
+	db bun.IDB
 }
 
-func NewAccountRepository(conn bun.IDB) *AccountRepository {
+func NewAccountRepository(db bun.IDB) *AccountRepository {
 	return &AccountRepository{
-		conn: conn,
+		db: db,
 	}
 }
 
-func (r *AccountRepository) Get(id domain.AccountID) (*domain.AccountDTO, error) {
+func (r *AccountRepository) Get(id int64) (*domain.AccountDTO, error) {
 	ctx := context.Background()
 	ac := &model.Account{
-		ID: int64(id),
+		ID: id,
 	}
 
-	if err := r.conn.NewSelect().Model(ac).WherePK().Scan(ctx); err != nil {
+	if err := r.db.NewSelect().Model(ac).WherePK().Scan(ctx); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Create(in *domain.AccountCreateDTO) (*domain.AccountDTO, error) {
+func (r *AccountRepository) Create(udto *domain.AccountUnspecifiedDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := model.CreateAccountFromCreateDTO(in)
+	ac := model.CreateAccountFromUnspecifiedDTO(udto)
 
-	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -74,16 +78,16 @@ func (r *AccountRepository) Create(in *domain.AccountCreateDTO) (*domain.Account
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Update(in *domain.AccountDTO) (*domain.AccountDTO, error) {
+func (r *AccountRepository) Update(dto *domain.AccountDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := model.CreateAccountFromDTO(in)
+	ac := model.CreateAccountFromDTO(dto)
 
-	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	if err := tx.NewSelect().Model(ac).WherePK().For("UPDATE").Scan(ctx); err != nil {
+	if err := tx.NewSelect().Model(ac).WherePK().For(sqlUPDATE).Scan(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -114,7 +118,7 @@ func (r *AccountRepository) Update(in *domain.AccountDTO) (*domain.AccountDTO, e
 			return nil, errors.WithStack(err)
 		}
 
-		return nil, errors.Newf(errMsgEmptyTarget, in.ID)
+		return nil, errors.Newf(errEmptyTarget, dto.ID)
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -128,18 +132,18 @@ func (r *AccountRepository) Update(in *domain.AccountDTO) (*domain.AccountDTO, e
 	return ac.DTO(), nil
 }
 
-func (r *AccountRepository) Delete(id domain.AccountID) error {
+func (r *AccountRepository) Delete(id int64) error {
 	ctx := context.Background()
 	ac := &model.Account{
-		ID: int64(id),
+		ID: id,
 	}
 
-	tx, err := r.conn.BeginTx(ctx, &sql.TxOptions{})
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	if err := tx.NewSelect().Model(ac).WherePK().For("UPDATE").Scan(ctx); err != nil {
+	if err := tx.NewSelect().Model(ac).WherePK().For(sqlUPDATE).Scan(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
 			return errors.WithStack(err)
 		}
