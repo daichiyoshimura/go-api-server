@@ -22,7 +22,6 @@ type AccountUnspecifiedDTO struct {
 }
 
 func NewAccountEntity(dto *AccountDTO) (*AccountEntity, error) {
-
 	name, err := value.NewAccountName(dto.Name)
 	if err != nil {
 		return nil, errors.WithStack(err)
