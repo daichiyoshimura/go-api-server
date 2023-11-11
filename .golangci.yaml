@@ -34,3 +34,5 @@ linters-settings:
       - github.com/cockroachdb/errors.
   cyclop:
     max-complexity: 12
+  goconst:
+    ignore-tests: true
