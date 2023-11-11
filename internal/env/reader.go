@@ -25,7 +25,7 @@ func (r *Reader) Read() (*Server, *DB, error) {
 	}
 
 	if stg.isDev() || stg.isTest() {
-		if err := godotenv.Load("../../.env"); err != nil {
+		if err := godotenv.Load("~/go/src/dev/go-api-server/.env"); err != nil { // FIXME unexpected behaivor 
 			return nil, nil, errors.Newf(errMsgEnv, err)
 		}
 	}

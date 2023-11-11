@@ -12,7 +12,8 @@ import (
 
 func TestNewAccountRepository(t *testing.T) {
 	t.Setenv("STAGE", "TEST")
-	_, dbEnv, _ := env.NewReader().Read()
+	_, dbEnv, err := env.NewReader().Read()
+	t.Log(err)
 	dbClient, _ := db.NewConnection().Establish(dbEnv)
 	
 	type args struct {
