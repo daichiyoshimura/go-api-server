@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"strings"
 
@@ -18,13 +19,13 @@ const (
 )
 
 const (
-	errMsgConnection string = "failed to establish db connection: %w"
+	errMsgPool string = "failed to establish db Pool: %w"
 )
 
-type Connection struct{}
+type Pool struct{}
 
-func NewConnection() *Connection {
-	return &Connection{}
+func NewPool() *Pool {
+	return &Pool{}
 }
 
 type IEnv interface {
@@ -34,22 +35,25 @@ type IEnv interface {
 	Instance() string
 }
 
-func (c *Connection) Establish(env IEnv) (*bun.DB, error) {
+func (c *Pool) Establish(env IEnv) (*bun.DB, error) {
 	source, err := c.dataSourceName(env)
 	if err != nil {
-		return nil, errors.Errorf(errMsgConnection, err)
+		return nil, errors.WithStack(err)
 	}
 
-	conn, err := sql.Open(driverName, source)
+	db, err := sql.Open(driverName, source)
 	if err != nil {
-		return nil, errors.Errorf(errMsgConnection, err)
+		return nil, errors.WithStack(err)
 	}
-	defer conn.Close()
 
-	return bun.NewDB(conn, mysqldialect.New()), nil
+	if err := db.PingContext(context.Background()); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return bun.NewDB(db, mysqldialect.New()), nil
 }
 
-func (c *Connection) dataSourceName(env IEnv) (string, error) {
+func (c *Pool) dataSourceName(env IEnv) (string, error) {
 	parts := []string{
 		env.User(),
 		":",
@@ -71,14 +75,14 @@ func (c *Connection) dataSourceName(env IEnv) (string, error) {
 	sb := &strings.Builder{}
 	for _, part := range parts {
 		if _, err := sb.WriteString(part); err != nil {
-			return "", errors.Errorf(errMsgConnection, err)
+			return "", errors.WithStack(err)
 		}
 	}
 
 	return sb.String(), nil
 }
 
-func (c *Connection) appendOptions(parts *[]string, options *map[string]string) {
+func (c *Pool) appendOptions(parts *[]string, options *map[string]string) {
 	partsOriginLength := len(*parts)
 
 	var partsLength int

@@ -12,9 +12,9 @@ type Account struct {
 	bun.BaseModel `bun:"table:accounts"`
 	ID            int64     `bun:"id,pk"`
 	Name          string    `bun:"name,notnull"`
-	CreatedAt     time.Time `bun:",nullzero,default:current_timestamp"`
-	UpdatedAt     time.Time `bun:",nullzero,default:current_timestamp"`
-	DeletedAt     time.Time `bun:",soft_delete,nullzero"`
+	CreatedAt     time.Time `bun:"created_at,nullzero,default:current_timestamp"`
+	UpdatedAt     time.Time `bun:"updated_at,nullzero,default:current_timestamp"`
+	DeletedAt     time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
 func CreateAccountFromDTO(dto *domain.AccountDTO) *Account {

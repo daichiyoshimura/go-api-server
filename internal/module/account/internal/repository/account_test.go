@@ -12,9 +12,8 @@ import (
 
 func TestNewAccountRepository(t *testing.T) {
 	t.Setenv("STAGE", "TEST")
-	_, dbEnv, err := env.NewReader().Read()
-	t.Log(err)
-	dbClient, _ := db.NewConnection().Establish(dbEnv)
+	_, dbEnv, _ := env.NewReader().Read()
+	dbClient, _ := db.NewPool().Establish(dbEnv)
 	
 	type args struct {
 		db bun.IDB
@@ -44,6 +43,13 @@ func TestNewAccountRepository(t *testing.T) {
 }
 
 func TestAccountRepository_Get(t *testing.T) {
+	t.Setenv("STAGE", "TEST")
+	_, dbEnv, _ := env.NewReader().Read()
+	dbClient, _ := db.NewPool().Establish(dbEnv)
+	
+	var id int64 = 1
+	name := "JohnSmith"
+	
 	type fields struct {
 		db bun.IDB
 	}
@@ -57,7 +63,20 @@ func TestAccountRepository_Get(t *testing.T) {
 		want    *domain.AccountDTO
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "Success",
+			fields: fields{
+				db: dbClient,
+			},
+			args: args{
+				id: id,
+			},
+			want: &domain.AccountDTO{
+				ID: id,
+				Name: name,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

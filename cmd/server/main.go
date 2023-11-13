@@ -17,7 +17,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	db, err := db.NewConnection().Establish(dbEnv)
+	db, err := db.NewPool().Establish(dbEnv)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
