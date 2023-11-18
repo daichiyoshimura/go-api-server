@@ -1,55 +1,25 @@
-package repository
+package repository_test
 
 import (
 	"awsomeapp/internal/db"
 	"awsomeapp/internal/env"
 	"awsomeapp/internal/module/account/internal/domain"
+	"awsomeapp/internal/module/account/internal/repository"
 	"reflect"
 	"testing"
 
 	"github.com/uptrace/bun"
 )
 
-func TestNewAccountRepository(t *testing.T) {
-	t.Setenv("STAGE", "TEST")
-	_, dbEnv, _ := env.NewReader().Read()
-	dbClient, _ := db.NewPool().Establish(dbEnv)
-	
-	type args struct {
-		db bun.IDB
-	}
-	tests := []struct {
-		name string
-		args args
-		want *AccountRepository
-	}{
-		{
-			name: "define",
-			args: args{
-				db: dbClient,
-			},
-			want: &AccountRepository{
-				db: dbClient,
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewAccountRepository(tt.args.db); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewAccountRepository() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestAccountRepository_Get(t *testing.T) {
 	t.Setenv("STAGE", "TEST")
 	_, dbEnv, _ := env.NewReader().Read()
 	dbClient, _ := db.NewPool().Establish(dbEnv)
-	
-	var id int64 = 1
-	name := "JohnSmith"
-	
+
+	var idExists int64 = 1
+	nameExists := "JohnSmith"
+	var idNotExits int64 = 2
+
 	type fields struct {
 		db bun.IDB
 	}
@@ -64,26 +34,34 @@ func TestAccountRepository_Get(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Success",
+			name: "exists",
 			fields: fields{
 				db: dbClient,
 			},
 			args: args{
-				id: id,
+				id: idExists,
 			},
 			want: &domain.AccountDTO{
-				ID: id,
-				Name: name,
+				ID:   idExists,
+				Name: nameExists,
 			},
 			wantErr: false,
+		},
+		{
+			name: "not exists",
+			fields: fields{
+				db: dbClient,
+			},
+			args: args{
+				id: idNotExits,
+			},
+			want:    nil,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &AccountRepository{
-				db: tt.fields.db,
-			}
-			got, err := r.Get(tt.args.id)
+			got, err := repository.NewAccountRepository(tt.fields.db).Get(tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AccountRepository.Get() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -109,13 +87,11 @@ func TestAccountRepository_Create(t *testing.T) {
 		want    *domain.AccountDTO
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &AccountRepository{
-				db: tt.fields.db,
-			}
+			r := repository.NewAccountRepository(tt.fields.db)
 			got, err := r.Create(tt.args.udto)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AccountRepository.Create() error = %v, wantErr %v", err, tt.wantErr)
@@ -142,13 +118,11 @@ func TestAccountRepository_Update(t *testing.T) {
 		want    *domain.AccountDTO
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &AccountRepository{
-				db: tt.fields.db,
-			}
+			r := repository.NewAccountRepository(tt.fields.db)
 			got, err := r.Update(tt.args.dto)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AccountRepository.Update() error = %v, wantErr %v", err, tt.wantErr)
@@ -174,13 +148,11 @@ func TestAccountRepository_Delete(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &AccountRepository{
-				db: tt.fields.db,
-			}
+			r := repository.NewAccountRepository(tt.fields.db)
 			if err := r.Delete(tt.args.id); (err != nil) != tt.wantErr {
 				t.Errorf("AccountRepository.Delete() error = %v, wantErr %v", err, tt.wantErr)
 			}

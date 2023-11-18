@@ -1,6 +1,10 @@
 {
     "go.lintOnSave": "workspace",
     "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--config=${workspaceFolder}/.golangci.yaml",
+        "--fast"
+    ],
     "go.buildFlags": [
         "-tags=wireinject"
     ],

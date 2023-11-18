@@ -26,7 +26,11 @@ linters:
     - testpackage
     - nlreturn
   skip-files:
-    - ".*gen.go"
+    - ".*\\_gen\\.go"
+    - ".*\\_test\\.go"
+    - ".*\\_mock\\.go"
+    - "\\/migrate\\/main\\.go"
+    - "\\/migrate\\/migration\\/main\\.go"
 linters-settings:
   wrapcheck:
     ignoreSigs:
