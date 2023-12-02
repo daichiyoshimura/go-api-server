@@ -4,7 +4,7 @@
 
 - I'm trying to implement modular monolith in clean architecture.
 - This repository is just experimental. 
-- Please open issue or pull request if you are interested.
+- Please open issue or pull request if you are interested in.
 
 ## Technical Stack
 
