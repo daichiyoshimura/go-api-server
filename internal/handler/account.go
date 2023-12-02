@@ -60,7 +60,8 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 	}
 
 	return ctx.JSON(http.StatusOK, &server.Account{
-		Id: out.ID,
+		Id:   out.ID,
+		Name: out.Name,
 	})
 }
 

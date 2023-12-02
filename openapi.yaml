@@ -141,13 +141,8 @@ components:
           description: Name of the account
     Error:
       required:
-        - code
         - message
       properties:
-        code:
-          type: integer
-          format: int64
-          description: Error code
         message:
           type: string
           description: Error message
