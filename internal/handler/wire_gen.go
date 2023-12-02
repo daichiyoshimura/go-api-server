@@ -15,28 +15,32 @@ import (
 
 // Injectors from wire.go:
 
-func Wire(db *bun.DB) (*Handlers, error) {
+func Wire(db *bun.DB, jwtSigningKey []byte) (*Handlers, error) {
 	healthHandler := NewHealthHandler()
 	accountUsecase, err := account.Wire(db)
 	if err != nil {
 		return nil, err
 	}
 	accountHandler := NewAccountHandler(accountUsecase)
+	authHandler := NewAuthHandler(jwtSigningKey)
 	handlers := &Handlers{
 		HealthHandler:  healthHandler,
 		AccountHandler: accountHandler,
+		AuthHandler:    authHandler,
 	}
 	return handlers, nil
 }
 
-func WireMock(t *testing.T) (*Handlers, error) {
+func WireMock(t *testing.T, jwtSigningKey []byte) (*Handlers, error) {
 	healthHandler := NewHealthHandler()
 	controller := provideMockController(t)
 	mockiAccountUsecase := NewMockiAccountUsecase(controller)
 	accountHandler := NewAccountHandler(mockiAccountUsecase)
+	authHandler := NewAuthHandler(jwtSigningKey)
 	handlers := &Handlers{
 		HealthHandler:  healthHandler,
 		AccountHandler: accountHandler,
+		AuthHandler:    authHandler,
 	}
 	return handlers, nil
 }

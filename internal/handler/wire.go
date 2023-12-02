@@ -13,19 +13,20 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-func Wire(db *bun.DB) (*Handlers, error) {
+func Wire(db *bun.DB, jwtSigningKey []byte) (*Handlers, error) {
 	wire.Build(
 		account.Wire,
 		wire.Bind(new(iAccountUsecase), new(*account.AccountUsecase)),
 		NewAccountHandler,
 		NewHealthHandler,
+		NewAuthHandler,
 		wire.Struct(new(Handlers), "*"),
 	)
 
 	return &Handlers{}, nil
 }
 
-func WireMock(t *testing.T) (*Handlers, error) {
+func WireMock(t *testing.T, jwtSigningKey []byte) (*Handlers, error) {
 	wire.Build(
 		wire.Bind(new(gomock.TestReporter), new(*testing.T)),
 		provideMockController,
@@ -33,6 +34,7 @@ func WireMock(t *testing.T) (*Handlers, error) {
 		wire.Bind(new(iAccountUsecase), new(*MockiAccountUsecase)),
 		NewAccountHandler,
 		NewHealthHandler,
+		NewAuthHandler,
 		wire.Struct(new(Handlers), "*"),
 	)
 

@@ -34,6 +34,7 @@ func TestReader_Read(t *testing.T) {
 		name    string
 		want    *Server
 		want1   *DB
+		want2	*JWT
 		wantErr bool
 	}{
 		{
@@ -41,6 +42,7 @@ func TestReader_Read(t *testing.T) {
 			name:    "invalid STAGE",
 			want:    nil,
 			want1:   nil,
+			want2:	 nil,
 			wantErr: true,
 		},
 		{
@@ -55,6 +57,9 @@ func TestReader_Read(t *testing.T) {
 				password: os.Getenv("DB_PASSWORD"),
 				instance: os.Getenv("DB_INSTANCE"),
 			},
+			want2: &JWT{
+				secret: os.Getenv("JWT_SECRET"),
+			},
 			wantErr: false,
 		},
 	}
@@ -62,7 +67,7 @@ func TestReader_Read(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Setenv("STAGE", tt.stage)
 			r := NewReader()
-			got, got1, err := r.Read()
+			got, got1, got2, err := r.Read()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Reader.Read() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -72,6 +77,9 @@ func TestReader_Read(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got1, tt.want1) {
 				t.Errorf("Reader.Read() got1 = %v, want %v", got1, tt.want1)
+			}
+			if !reflect.DeepEqual(got2, tt.want2) {
+				t.Errorf("Reader.Read() got2 = %v, want %v", got2, tt.want2)
 			}
 		})
 	}

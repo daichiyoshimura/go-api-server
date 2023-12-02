@@ -13,7 +13,7 @@ import (
 
 func TestAccountRepository_Get(t *testing.T) {
 	t.Setenv("STAGE", "TEST")
-	_, dbEnv, _ := env.NewReader().Read()
+	_, dbEnv, _, _ := env.NewReader().Read() //nolint
 	dbClient, _ := db.NewPool().Establish(dbEnv)
 
 	var idExists int64 = 1

@@ -25,9 +25,12 @@ type ServerInterface interface {
 	// Update account by id
 	// (PUT /account/{id})
 	PutAccount(ctx echo.Context, id int64) error
+	// signin
+	// (POST /auth/signin)
+	PostSignin(ctx echo.Context) error
 	// Health Check
 	// (GET /health)
-	GetHealth(ctx echo.Context) error
+	Health(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -92,12 +95,21 @@ func (w *ServerInterfaceWrapper) PutAccount(ctx echo.Context) error {
 	return err
 }
 
-// GetHealth converts echo context to params.
-func (w *ServerInterfaceWrapper) GetHealth(ctx echo.Context) error {
+// PostSignin converts echo context to params.
+func (w *ServerInterfaceWrapper) PostSignin(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetHealth(ctx)
+	err = w.Handler.PostSignin(ctx)
+	return err
+}
+
+// Health converts echo context to params.
+func (w *ServerInterfaceWrapper) Health(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.Health(ctx)
 	return err
 }
 
@@ -133,6 +145,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.DELETE(baseURL+"/account/:id", wrapper.DeleteAccount)
 	router.GET(baseURL+"/account/:id", wrapper.GetAccount)
 	router.PUT(baseURL+"/account/:id", wrapper.PutAccount)
-	router.GET(baseURL+"/health", wrapper.GetHealth)
+	router.POST(baseURL+"/auth/signin", wrapper.PostSignin)
+	router.GET(baseURL+"/health", wrapper.Health)
 
 }

@@ -6,15 +6,42 @@ paths:
   /health:
     get:
       summary: Health Check
-    responses:  
-        200:
-          description: no content
+      operationId: health
+    responses:
+      200:
+        description: no content
+      default:
+        description: unexpected error
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+  /auth/signin:
+    post:
+      summary: signin
+      description: signin an account
+      operationId: postSignin
+      requestBody:
+        description: signin request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SigninRequest"
+      responses:
+        "200":
+          description: signin response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SigninResponse"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /account/{id}:
     get:
       summary: Returns account by id
@@ -139,6 +166,22 @@ components:
         name:
           type: string
           description: Name of the account
+    SigninRequest:
+      required:
+        - id
+        - pass
+      properties:
+        id:
+          type: integer
+          format: int64
+        pass:
+          type: string
+    SigninResponse:
+      required: 
+        - token
+      properties:
+        token:
+          type: string
     Error:
       required:
         - message

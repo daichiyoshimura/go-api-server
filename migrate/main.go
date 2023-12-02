@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	_, dbEnv, err := env.NewReader().Read()
+	_, dbEnv, _, err := env.NewReader().Read()
 	if err != nil {
 		panic(err)
 	}

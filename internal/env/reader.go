@@ -18,29 +18,34 @@ func NewReader() *Reader {
 	return &Reader{}
 }
 
-func (r *Reader) Read() (*Server, *DB, error) {
+func (r *Reader) Read() (*Server, *DB, *JWT, error) {
 	stg, err := NewStage(os.Getenv("STAGE"))
 	if err != nil {
-		return nil, nil, errors.WithStack(err)
+		return nil, nil, nil, errors.WithStack(err)
 	}
 
 	if stg.isDev() || stg.isTest() {
 		if err := godotenv.Load("/go/src/dev/go-api-server/.env"); err != nil {
-			return nil, nil, errors.Newf(errMsgEnv, err)
+			return nil, nil, nil, errors.Newf(errMsgEnv, err)
 		}
 	}
 
 	srv, err := r.server()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	db, err := r.db()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
-	return srv, db, nil
+	jwt, err := r.jwt()
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return srv, db, jwt, nil
 }
 
 func (r *Reader) read(key string) (string, error) {

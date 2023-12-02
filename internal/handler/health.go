@@ -12,6 +12,6 @@ func NewHealthHandler() *HealthHandler {
 	return &HealthHandler{}
 }
 
-func (h *HealthHandler) GetHealth(ctx echo.Context) error {
+func (h *HealthHandler) Health(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusOK)
 }

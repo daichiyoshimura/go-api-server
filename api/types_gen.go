@@ -24,8 +24,22 @@ type NewAccount struct {
 	Name string `json:"name"`
 }
 
+// SigninRequest defines model for SigninRequest.
+type SigninRequest struct {
+	Id   int64  `json:"id"`
+	Pass string `json:"pass"`
+}
+
+// SigninResponse defines model for SigninResponse.
+type SigninResponse struct {
+	Token string `json:"token"`
+}
+
 // PostAccountJSONRequestBody defines body for PostAccount for application/json ContentType.
 type PostAccountJSONRequestBody = NewAccount
 
 // PutAccountJSONRequestBody defines body for PutAccount for application/json ContentType.
 type PutAccountJSONRequestBody = Account
+
+// PostSigninJSONRequestBody defines body for PostSignin for application/json ContentType.
+type PostSigninJSONRequestBody = SigninRequest

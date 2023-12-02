@@ -105,8 +105,13 @@ type ClientInterface interface {
 
 	PutAccount(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetHealth request
-	GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PostSigninWithBody request with any body
+	PostSigninWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PostSignin(ctx context.Context, body PostSigninJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// Health request
+	Health(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) PostAccountWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -181,8 +186,32 @@ func (c *Client) PutAccount(ctx context.Context, id int64, body PutAccountJSONRe
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetHealthRequest(c.Server)
+func (c *Client) PostSigninWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostSigninRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostSignin(ctx context.Context, body PostSigninJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostSigninRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) Health(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewHealthRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -348,8 +377,48 @@ func NewPutAccountRequestWithBody(server string, id int64, contentType string, b
 	return req, nil
 }
 
-// NewGetHealthRequest generates requests for GetHealth
-func NewGetHealthRequest(server string) (*http.Request, error) {
+// NewPostSigninRequest calls the generic PostSignin builder with application/json body
+func NewPostSigninRequest(server string, body PostSigninJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPostSigninRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewPostSigninRequestWithBody generates requests for PostSignin with any type of body
+func NewPostSigninRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/auth/signin")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewHealthRequest generates requests for Health
+func NewHealthRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -434,8 +503,13 @@ type ClientWithResponsesInterface interface {
 
 	PutAccountWithResponse(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
 
-	// GetHealthWithResponse request
-	GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error)
+	// PostSigninWithBodyWithResponse request with any body
+	PostSigninWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostSigninResponse, error)
+
+	PostSigninWithResponse(ctx context.Context, body PostSigninJSONRequestBody, reqEditors ...RequestEditorFn) (*PostSigninResponse, error)
+
+	// HealthWithResponse request
+	HealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*HealthResponse, error)
 }
 
 type PostAccountResponse struct {
@@ -529,13 +603,15 @@ func (r PutAccountResponse) StatusCode() int {
 	return 0
 }
 
-type GetHealthResponse struct {
+type PostSigninResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *SigninResponse
+	JSONDefault  *Error
 }
 
 // Status returns HTTPResponse.Status
-func (r GetHealthResponse) Status() string {
+func (r PostSigninResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -543,7 +619,28 @@ func (r GetHealthResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetHealthResponse) StatusCode() int {
+func (r PostSigninResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type HealthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r HealthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r HealthResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -602,13 +699,30 @@ func (c *ClientWithResponses) PutAccountWithResponse(ctx context.Context, id int
 	return ParsePutAccountResponse(rsp)
 }
 
-// GetHealthWithResponse request returning *GetHealthResponse
-func (c *ClientWithResponses) GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error) {
-	rsp, err := c.GetHealth(ctx, reqEditors...)
+// PostSigninWithBodyWithResponse request with arbitrary body returning *PostSigninResponse
+func (c *ClientWithResponses) PostSigninWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostSigninResponse, error) {
+	rsp, err := c.PostSigninWithBody(ctx, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetHealthResponse(rsp)
+	return ParsePostSigninResponse(rsp)
+}
+
+func (c *ClientWithResponses) PostSigninWithResponse(ctx context.Context, body PostSigninJSONRequestBody, reqEditors ...RequestEditorFn) (*PostSigninResponse, error) {
+	rsp, err := c.PostSignin(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostSigninResponse(rsp)
+}
+
+// HealthWithResponse request returning *HealthResponse
+func (c *ClientWithResponses) HealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*HealthResponse, error) {
+	rsp, err := c.Health(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseHealthResponse(rsp)
 }
 
 // ParsePostAccountResponse parses an HTTP response from a PostAccountWithResponse call
@@ -736,15 +850,48 @@ func ParsePutAccountResponse(rsp *http.Response) (*PutAccountResponse, error) {
 	return response, nil
 }
 
-// ParseGetHealthResponse parses an HTTP response from a GetHealthWithResponse call
-func ParseGetHealthResponse(rsp *http.Response) (*GetHealthResponse, error) {
+// ParsePostSigninResponse parses an HTTP response from a PostSigninWithResponse call
+func ParsePostSigninResponse(rsp *http.Response) (*PostSigninResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetHealthResponse{
+	response := &PostSigninResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SigninResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseHealthResponse parses an HTTP response from a HealthWithResponse call
+func ParseHealthResponse(rsp *http.Response) (*HealthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &HealthResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
