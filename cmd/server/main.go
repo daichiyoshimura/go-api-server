@@ -13,8 +13,10 @@ import (
 func main() {
 	e := echo.New()
 
+	e.Use(log.RequestID())
 	logger := log.Logger()
 	e.Use(log.RequestLogger(logger))
+	
 
 	srvEnv, dbEnv, err := env.NewReader().Read()
 	if err != nil {
