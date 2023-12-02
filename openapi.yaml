@@ -3,6 +3,18 @@ info:
   version: 1.0.0
   title: Http Server I/F
 paths:
+  /health:
+    get:
+      summary: Health Check
+    responses:  
+        200:
+          description: no content
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /account/{id}:
     get:
       summary: Returns account by id

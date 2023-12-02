@@ -18,6 +18,7 @@ func Wire(db *bun.DB) (*Handlers, error) {
 		account.Wire,
 		wire.Bind(new(iAccountUsecase), new(*account.AccountUsecase)),
 		NewAccountHandler,
+		NewHealthHandler,
 		wire.Struct(new(Handlers), "*"),
 	)
 
@@ -31,6 +32,7 @@ func WireMock(t *testing.T) (*Handlers, error) {
 		NewMockiAccountUsecase,
 		wire.Bind(new(iAccountUsecase), new(*MockiAccountUsecase)),
 		NewAccountHandler,
+		NewHealthHandler,
 		wire.Struct(new(Handlers), "*"),
 	)
 

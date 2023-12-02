@@ -4,6 +4,7 @@ import (
 	"awsomeapp/internal/db"
 	"awsomeapp/internal/env"
 	"awsomeapp/internal/handler"
+	"awsomeapp/internal/log"
 	"awsomeapp/internal/server"
 
 	"github.com/labstack/echo/v4"
@@ -11,6 +12,9 @@ import (
 
 func main() {
 	e := echo.New()
+
+	logger := log.Logger()
+	e.Use(log.RequestLogger(logger))
 
 	srvEnv, dbEnv, err := env.NewReader().Read()
 	if err != nil {
@@ -27,7 +31,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	server.RegisterHandlersWithBaseURL(e, handlers, srvEnv.Host())
+	server.RegisterHandlers(e, handlers)
 
 	if err := e.Start(srvEnv.Host()); err != nil {
 		e.Logger.Fatal(err)

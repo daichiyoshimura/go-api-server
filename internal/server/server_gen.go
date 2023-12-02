@@ -25,6 +25,9 @@ type ServerInterface interface {
 	// Update account by id
 	// (PUT /account/{id})
 	PutAccount(ctx echo.Context, id int64) error
+	// Health Check
+	// (GET /health)
+	GetHealth(ctx echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -89,6 +92,15 @@ func (w *ServerInterfaceWrapper) PutAccount(ctx echo.Context) error {
 	return err
 }
 
+// GetHealth converts echo context to params.
+func (w *ServerInterfaceWrapper) GetHealth(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetHealth(ctx)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -121,5 +133,6 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 	router.DELETE(baseURL+"/account/:id", wrapper.DeleteAccount)
 	router.GET(baseURL+"/account/:id", wrapper.GetAccount)
 	router.PUT(baseURL+"/account/:id", wrapper.PutAccount)
+	router.GET(baseURL+"/health", wrapper.GetHealth)
 
 }

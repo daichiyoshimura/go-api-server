@@ -24,7 +24,7 @@ openapi:
 # wire
 .PHONY: wire
 wire:
-	wire ${HANDLER_DIR}/wire.go ${HANDLER_DIR}/account.go ${HANDLER_DIR}/iAccountUsecase.go ${HANDLER_DIR}/accountUsecase_mock.go ${HANDLER_DIR}/handlers.go ${HANDLER_DIR}/log.go
+	wire ${HANDLER_DIR}/wire.go ${HANDLER_DIR}/health.go ${HANDLER_DIR}/account.go ${HANDLER_DIR}/iAccountUsecase.go ${HANDLER_DIR}/accountUsecase_mock.go ${HANDLER_DIR}/handlers.go ${HANDLER_DIR}/log.go
 	wire ${ACCOUNT_DIR}/wire.go ${ACCOUNT_DIR}/iRepo.go ${ACCOUNT_DIR}/Repo_mock.go ${ACCOUNT_DIR}/usecase.go	
 
 # mockgen account

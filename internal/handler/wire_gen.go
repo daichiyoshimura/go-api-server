@@ -16,22 +16,26 @@ import (
 // Injectors from wire.go:
 
 func Wire(db *bun.DB) (*Handlers, error) {
+	healthHandler := NewHealthHandler()
 	accountUsecase, err := account.Wire(db)
 	if err != nil {
 		return nil, err
 	}
 	accountHandler := NewAccountHandler(accountUsecase)
 	handlers := &Handlers{
+		HealthHandler:  healthHandler,
 		AccountHandler: accountHandler,
 	}
 	return handlers, nil
 }
 
 func WireMock(t *testing.T) (*Handlers, error) {
+	healthHandler := NewHealthHandler()
 	controller := provideMockController(t)
 	mockiAccountUsecase := NewMockiAccountUsecase(controller)
 	accountHandler := NewAccountHandler(mockiAccountUsecase)
 	handlers := &Handlers{
+		HealthHandler:  healthHandler,
 		AccountHandler: accountHandler,
 	}
 	return handlers, nil
