@@ -70,7 +70,6 @@ func (i *AccountUpdateInput) DTO() *domain.AccountDTO {
 }
 
 func (u *AccountUsecase) Update(in *AccountUpdateInput) (*Account, error) {
-
 	ac, err := domain.NewAccountService(u.repo).Update(in.DTO())
 	if err != nil {
 		return nil, errors.WithStack(err)

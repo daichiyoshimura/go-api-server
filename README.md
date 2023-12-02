@@ -12,7 +12,7 @@
 | ---- | ---- | ---- |
 | Frame Work | echo | <https://echo.labstack.com/> |
 | Database Client | bun | <https://bun.uptrace.dev/> |
-| Dependency Injection | wire | <github.com/google/wire> |
+| Dependency Injection | wire | <https://github.com/google/wire> |
 | Mock | gomock | <https://pkg.go.dev/go.uber.org/mock/gomock> |
 | I/F | oapi-codegen | <https://github.com/deepmap/oapi-codegen> |
 
