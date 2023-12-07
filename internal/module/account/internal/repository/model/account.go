@@ -6,6 +6,7 @@ import (
 	"awsomeapp/internal/module/account/internal/domain"
 
 	"github.com/cockroachdb/errors"
+	"github.com/google/uuid"
 
 	"github.com/uptrace/bun"
 )
@@ -19,94 +20,57 @@ type Account struct {
 	DeletedAt     time.Time `bun:"delete_at,soft_delete,nullzero"`
 }
 
-func (a *Account) DTO() (*domain.AccountDTO, error) {
-	id, err := newUUIDHelper().toString(a.ID)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return &domain.AccountDTO{
-		ID:   id,
-		Name: a.Name,
-	}, nil
-}
-
-type AccountFactory struct {
-	uuidHelper iUUIDHelper
-}
-
-func NewAccountFactory(uuidHelper iUUIDHelper) *AccountFactory {
-	return &AccountFactory{
-		uuidHelper: uuidHelper,
-	}
-}
-
-func (f *AccountFactory) CreateFromID(id string) (*Account, error) {
-	binId, err := f.uuidHelper.toBinary(id)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return &Account{
-		ID: binId,
-	}, nil
-}
-
-func (f *AccountFactory) CreateFromDTO(dto *domain.AccountDTO) (*Account, error) {
-	binId, err := newUUIDHelper().toBinary(dto.ID)
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return &Account{
-		ID:   binId,
-		Name: dto.Name,
-	}, nil
-}
-
-func (f *AccountFactory) CreateAccountFromUnspecifiedDTO(udto *domain.AccountUnspecifiedDTO) (*Account, error) {
-	binId, err := newUUIDHelper().generate()
-	if err != nil {
-		return nil, errors.WithStack(err)
-	}
-
-	return &Account{
-		ID:   binId,
-		Name: udto.Name,
-	}, nil
-}
-
 func CreateAccountFromID(id string) (*Account, error) {
-	binId, err := newUUIDHelper().toBinary(id)
+	parsedID, err := uuid.Parse(id)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
+	binID, err := parsedID.MarshalBinary()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 	return &Account{
-		ID: binId,
+		ID: binID,
 	}, nil
 }
 
 func CreateAccountFromDTO(dto *domain.AccountDTO) (*Account, error) {
-	binId, err := newUUIDHelper().toBinary(dto.ID)
+	parsedID, err := uuid.Parse(dto.ID)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
+	binID, err := parsedID.MarshalBinary()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 	return &Account{
-		ID:   binId,
+		ID:   binID,
 		Name: dto.Name,
 	}, nil
 }
 
 func CreateAccountFromUnspecifiedDTO(udto *domain.AccountUnspecifiedDTO) (*Account, error) {
-	binId, err := newUUIDHelper().generate()
+	parsedID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-
+	binID, err := parsedID.MarshalBinary()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 	return &Account{
-		ID:   binId,
+		ID:   binID,
 		Name: udto.Name,
+	}, nil
+}
+
+func (a *Account) DTO() (*domain.AccountDTO, error) {
+	id, err := uuid.ParseBytes(a.ID)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return &domain.AccountDTO{
+		ID:   id.String(),
+		Name: a.Name,
 	}, nil
 }
