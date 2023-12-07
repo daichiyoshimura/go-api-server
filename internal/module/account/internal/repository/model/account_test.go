@@ -146,3 +146,50 @@ func TestAccount_DTO(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateAccountFromID(t *testing.T) {
+	id, _ := uuid.NewRandom()
+	binid, _ := id.MarshalBinary()
+	strid := id.String()
+
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Account
+		wantErr bool
+	}{
+		{
+			name: "success",
+			args: args{
+				id: strid,
+			},
+			want: &Account{
+				ID: binid,
+			},
+			wantErr: false,
+		},
+		{
+			name: "failed to parse",
+			args: args{
+				id: strid,
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CreateAccountFromID(tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateAccountFromID() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreateAccountFromID() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

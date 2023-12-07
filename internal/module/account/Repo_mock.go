@@ -54,7 +54,7 @@ func (mr *MockiAccountRepositoryMockRecorder) Create(in any) *gomock.Call {
 }
 
 // Delete mocks base method.
-func (m *MockiAccountRepository) Delete(id int64) error {
+func (m *MockiAccountRepository) Delete(id string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", id)
 	ret0, _ := ret[0].(error)
@@ -68,7 +68,7 @@ func (mr *MockiAccountRepositoryMockRecorder) Delete(id any) *gomock.Call {
 }
 
 // Get mocks base method.
-func (m *MockiAccountRepository) Get(id int64) (*domain.AccountDTO, error) {
+func (m *MockiAccountRepository) Get(id string) (*domain.AccountDTO, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", id)
 	ret0, _ := ret[0].(*domain.AccountDTO)
