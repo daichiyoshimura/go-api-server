@@ -6,14 +6,13 @@ import (
 	"github.com/cockroachdb/errors"
 )
 
-// TODO make id uuid.
 type AccountEntity struct {
-	id   int64
+	id   string
 	name *value.AccountName
 }
 
 type AccountDTO struct {
-	ID   int64
+	ID   string
 	Name string
 }
 

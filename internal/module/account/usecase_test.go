@@ -137,7 +137,7 @@ func TestAccountUsecase_Get(t *testing.T) {
 
 func TestAccountUpdateInput_DTO(t *testing.T) {
 	type fields struct {
-		ID   int64
+		ID   string
 		Name string
 	}
 	tests := []struct {

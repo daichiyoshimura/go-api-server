@@ -6,7 +6,7 @@ package api
 // Account defines model for Account.
 type Account struct {
 	// Id Unique id of the account
-	Id int64 `json:"id"`
+	Id string `json:"id"`
 
 	// Name Name of the account
 	Name string `json:"name"`
@@ -26,7 +26,7 @@ type NewAccount struct {
 
 // SigninRequest defines model for SigninRequest.
 type SigninRequest struct {
-	Id   int64  `json:"id"`
+	Id   string `json:"id"`
 	Pass string `json:"pass"`
 }
 

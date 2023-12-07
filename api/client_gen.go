@@ -95,15 +95,15 @@ type ClientInterface interface {
 	PostAccount(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteAccount request
-	DeleteAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteAccount(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetAccount request
-	GetAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetAccount(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PutAccountWithBody request with any body
-	PutAccountWithBody(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PutAccountWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	PutAccount(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PutAccount(ctx context.Context, id string, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PostSigninWithBody request with any body
 	PostSigninWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -138,7 +138,7 @@ func (c *Client) PostAccount(ctx context.Context, body PostAccountJSONRequestBod
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) DeleteAccount(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteAccountRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func (c *Client) DeleteAccount(ctx context.Context, id int64, reqEditors ...Requ
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetAccount(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetAccount(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetAccountRequest(c.Server, id)
 	if err != nil {
 		return nil, err
@@ -162,7 +162,7 @@ func (c *Client) GetAccount(ctx context.Context, id int64, reqEditors ...Request
 	return c.Client.Do(req)
 }
 
-func (c *Client) PutAccountWithBody(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) PutAccountWithBody(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPutAccountRequestWithBody(c.Server, id, contentType, body)
 	if err != nil {
 		return nil, err
@@ -174,7 +174,7 @@ func (c *Client) PutAccountWithBody(ctx context.Context, id int64, contentType s
 	return c.Client.Do(req)
 }
 
-func (c *Client) PutAccount(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) PutAccount(ctx context.Context, id string, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPutAccountRequest(c.Server, id, body)
 	if err != nil {
 		return nil, err
@@ -263,7 +263,7 @@ func NewPostAccountRequestWithBody(server string, contentType string, body io.Re
 }
 
 // NewDeleteAccountRequest generates requests for DeleteAccount
-func NewDeleteAccountRequest(server string, id int64) (*http.Request, error) {
+func NewDeleteAccountRequest(server string, id string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -297,7 +297,7 @@ func NewDeleteAccountRequest(server string, id int64) (*http.Request, error) {
 }
 
 // NewGetAccountRequest generates requests for GetAccount
-func NewGetAccountRequest(server string, id int64) (*http.Request, error) {
+func NewGetAccountRequest(server string, id string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -331,7 +331,7 @@ func NewGetAccountRequest(server string, id int64) (*http.Request, error) {
 }
 
 // NewPutAccountRequest calls the generic PutAccount builder with application/json body
-func NewPutAccountRequest(server string, id int64, body PutAccountJSONRequestBody) (*http.Request, error) {
+func NewPutAccountRequest(server string, id string, body PutAccountJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -342,7 +342,7 @@ func NewPutAccountRequest(server string, id int64, body PutAccountJSONRequestBod
 }
 
 // NewPutAccountRequestWithBody generates requests for PutAccount with any type of body
-func NewPutAccountRequestWithBody(server string, id int64, contentType string, body io.Reader) (*http.Request, error) {
+func NewPutAccountRequestWithBody(server string, id string, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -493,15 +493,15 @@ type ClientWithResponsesInterface interface {
 	PostAccountWithResponse(ctx context.Context, body PostAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PostAccountResponse, error)
 
 	// DeleteAccountWithResponse request
-	DeleteAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*DeleteAccountResponse, error)
+	DeleteAccountWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteAccountResponse, error)
 
 	// GetAccountWithResponse request
-	GetAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetAccountResponse, error)
+	GetAccountWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetAccountResponse, error)
 
 	// PutAccountWithBodyWithResponse request with any body
-	PutAccountWithBodyWithResponse(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
+	PutAccountWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
 
-	PutAccountWithResponse(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
+	PutAccountWithResponse(ctx context.Context, id string, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error)
 
 	// PostSigninWithBodyWithResponse request with any body
 	PostSigninWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostSigninResponse, error)
@@ -665,7 +665,7 @@ func (c *ClientWithResponses) PostAccountWithResponse(ctx context.Context, body 
 }
 
 // DeleteAccountWithResponse request returning *DeleteAccountResponse
-func (c *ClientWithResponses) DeleteAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*DeleteAccountResponse, error) {
+func (c *ClientWithResponses) DeleteAccountWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*DeleteAccountResponse, error) {
 	rsp, err := c.DeleteAccount(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -674,7 +674,7 @@ func (c *ClientWithResponses) DeleteAccountWithResponse(ctx context.Context, id 
 }
 
 // GetAccountWithResponse request returning *GetAccountResponse
-func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, id int64, reqEditors ...RequestEditorFn) (*GetAccountResponse, error) {
+func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, id string, reqEditors ...RequestEditorFn) (*GetAccountResponse, error) {
 	rsp, err := c.GetAccount(ctx, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -683,7 +683,7 @@ func (c *ClientWithResponses) GetAccountWithResponse(ctx context.Context, id int
 }
 
 // PutAccountWithBodyWithResponse request with arbitrary body returning *PutAccountResponse
-func (c *ClientWithResponses) PutAccountWithBodyWithResponse(ctx context.Context, id int64, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
+func (c *ClientWithResponses) PutAccountWithBodyWithResponse(ctx context.Context, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
 	rsp, err := c.PutAccountWithBody(ctx, id, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -691,7 +691,7 @@ func (c *ClientWithResponses) PutAccountWithBodyWithResponse(ctx context.Context
 	return ParsePutAccountResponse(rsp)
 }
 
-func (c *ClientWithResponses) PutAccountWithResponse(ctx context.Context, id int64, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
+func (c *ClientWithResponses) PutAccountWithResponse(ctx context.Context, id string, body PutAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*PutAccountResponse, error) {
 	rsp, err := c.PutAccount(ctx, id, body, reqEditors...)
 	if err != nil {
 		return nil, err

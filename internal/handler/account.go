@@ -18,7 +18,7 @@ func NewAccountHandler(usecase iAccountUsecase) *AccountHandler {
 	}
 }
 
-func (h *AccountHandler) GetAccount(ctx echo.Context, id int64) error {
+func (h *AccountHandler) GetAccount(ctx echo.Context, id string) error {
 	out, err := h.usecase.Get(&account.AccountGetInput{
 		ID: id,
 	})
@@ -65,7 +65,7 @@ func (h *AccountHandler) PostAccount(ctx echo.Context) error {
 	})
 }
 
-func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
+func (h *AccountHandler) PutAccount(ctx echo.Context, id string) error {
 	var req server.PutAccountJSONRequestBody
 	if err := ctx.Bind(&req); err != nil {
 		writeLog(ctx, err)
@@ -93,7 +93,7 @@ func (h *AccountHandler) PutAccount(ctx echo.Context, id int64) error {
 	})
 }
 
-func (h *AccountHandler) DeleteAccount(ctx echo.Context, id int64) error {
+func (h *AccountHandler) DeleteAccount(ctx echo.Context, id string) error {
 	err := h.usecase.Delete(&account.AccountDeleteInput{
 		ID: id,
 	})

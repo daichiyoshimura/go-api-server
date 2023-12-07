@@ -17,7 +17,7 @@ func NewAccountUsecase(repo iAccountRepository) *AccountUsecase {
 }
 
 type Account struct {
-	ID   int64
+	ID   string
 	Name string
 }
 
@@ -48,7 +48,7 @@ func (u *AccountUsecase) Create(in *AccountCreateInput) (*Account, error) {
 }
 
 type AccountGetInput struct {
-	ID int64
+	ID string
 }
 
 func (u *AccountUsecase) Get(in *AccountGetInput) (*Account, error) {
@@ -79,7 +79,7 @@ func (u *AccountUsecase) Update(in *AccountUpdateInput) (*Account, error) {
 }
 
 type AccountDeleteInput struct {
-	ID int64
+	ID string
 }
 
 func (u *AccountUsecase) Delete(in *AccountDeleteInput) error {

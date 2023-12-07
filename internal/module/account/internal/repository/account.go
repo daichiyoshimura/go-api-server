@@ -29,39 +29,39 @@ func NewAccountRepository(db bun.IDB) *AccountRepository {
 	}
 }
 
-func (r *AccountRepository) Get(id int64) (*domain.AccountDTO, error) {
+func (r *AccountRepository) Get(id string) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := &model.Account{
-		ID: id,
+	ac, err := model.CreateAccountFromID(id)
+	if err != nil {
+		return nil, errors.WithStack(err)
 	}
 
 	if err := r.db.NewSelect().Model(ac).WherePK().Scan(ctx); err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	return ac.DTO(), nil
+	dto, err := ac.DTO()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return dto, nil
 }
 
 func (r *AccountRepository) Create(udto *domain.AccountUnspecifiedDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := model.CreateAccountFromUnspecifiedDTO(udto)
+
+	ac, err := model.CreateAccountFromUnspecifiedDTO(udto)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 
-	res, err := tx.NewInsert().Model(ac).Exec(ctx)
-	if err != nil {
-		if txerr := tx.Rollback(); txerr != nil {
-			return nil, errors.WithStack(err)
-		}
-
-		return nil, errors.WithStack(err)
-	}
-
-	id, err := res.LastInsertId()
-	if err != nil {
+	if _, err = tx.NewInsert().Model(ac).Exec(ctx); err != nil {
 		if txerr := tx.Rollback(); txerr != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -73,14 +73,21 @@ func (r *AccountRepository) Create(udto *domain.AccountUnspecifiedDTO) (*domain.
 		return nil, errors.WithStack(err)
 	}
 
-	ac.ID = id
+	dto, err := ac.DTO()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
-	return ac.DTO(), nil
+	return dto, nil
 }
 
 func (r *AccountRepository) Update(dto *domain.AccountDTO) (*domain.AccountDTO, error) {
 	ctx := context.Background()
-	ac := model.CreateAccountFromDTO(dto)
+
+	ac, err := model.CreateAccountFromDTO(dto)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
@@ -129,13 +136,20 @@ func (r *AccountRepository) Update(dto *domain.AccountDTO) (*domain.AccountDTO, 
 		return nil, errors.WithStack(err)
 	}
 
-	return ac.DTO(), nil
+	retDto, err := ac.DTO()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return retDto, nil
 }
 
-func (r *AccountRepository) Delete(id int64) error {
+func (r *AccountRepository) Delete(id string) error {
 	ctx := context.Background()
-	ac := &model.Account{
-		ID: id,
+
+	ac, err := model.CreateAccountFromID(id)
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{})

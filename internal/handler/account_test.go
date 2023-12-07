@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/cockroachdb/errors"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/mock/gomock"
 )
@@ -19,18 +20,19 @@ func TestAccountHandler_GetAccount(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	u := NewMockiAccountUsecase(ctrl)
 
-	var id int64 = 1
+	id, _ := uuid.NewRandom()
+	strid := id.String()
 	name := "JohnSmith"
 	in := &account.AccountGetInput{
-		ID: id,
+		ID: strid,
 	}
 	out := &account.Account{
-		ID:   id,
+		ID:   strid,
 		Name: name,
 	}
 
 	responseBody := &server.Account{
-		Id:   id,
+		Id:   strid,
 		Name: name,
 	}
 	errMsg := "mock err"
@@ -42,7 +44,7 @@ func TestAccountHandler_GetAccount(t *testing.T) {
 		usecase iAccountUsecase
 	}
 	type args struct {
-		id int64
+		id string
 	}
 	tests := []struct {
 		name       string
@@ -61,7 +63,7 @@ func TestAccountHandler_GetAccount(t *testing.T) {
 				}(),
 			},
 			args: args{
-				id: id,
+				id: strid,
 			},
 			wantErr:    false,
 			want:       responseBody,
@@ -76,7 +78,7 @@ func TestAccountHandler_GetAccount(t *testing.T) {
 				}(),
 			},
 			args: args{
-				id: id,
+				id: strid,
 			},
 			wantErr:    true,
 			want:       nil,
@@ -112,13 +114,14 @@ func TestAccountHandler_PostAccount(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	u := NewMockiAccountUsecase(ctrl)
 
-	var id int64 = 1
+	id, _ := uuid.NewRandom()
+	strid := id.String()
 	name := "JohnSmith"
 	in := &account.AccountCreateInput{
 		Name: name,
 	}
 	out := &account.Account{
-		ID:   id,
+		ID:   strid,
 		Name: name,
 	}
 
@@ -127,7 +130,7 @@ func TestAccountHandler_PostAccount(t *testing.T) {
 	}
 
 	responseBody := &server.Account{
-		Id:   id,
+		Id:   strid,
 		Name: name,
 	}
 	errMsg := "mock err"
@@ -215,7 +218,7 @@ func TestAccountHandler_PutAccount(t *testing.T) {
 	}
 	type args struct {
 		ctx echo.Context
-		id  int64
+		id  string
 	}
 	tests := []struct {
 		name    string
@@ -238,12 +241,14 @@ func TestAccountHandler_PutAccount(t *testing.T) {
 }
 
 func TestAccountHandler_DeleteAccount(t *testing.T) {
+	id, _ := uuid.NewRandom()
+	_ = id.String()
 	type fields struct {
 		usecase iAccountUsecase
 	}
 	type args struct {
 		ctx echo.Context
-		id  int64
+		id  string
 	}
 	tests := []struct {
 		name    string

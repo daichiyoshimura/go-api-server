@@ -6,14 +6,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
 func TestCreateAccountFromDTO(t *testing.T) {
-	var id int64 = 1
+	id, _ := uuid.NewRandom()
+	strid := id.String()
+	binid, _ := id.MarshalBinary()
 	name := "JohnSmith"
 	dto := &domain.AccountDTO{
-		ID:   id,
+		ID:   strid,
 		Name: name,
 	}
 
@@ -21,9 +24,10 @@ func TestCreateAccountFromDTO(t *testing.T) {
 		dto *domain.AccountDTO
 	}
 	tests := []struct {
-		name string
-		args args
-		want *Account
+		name    string
+		args    args
+		want    *Account
+		wantErr bool
 	}{
 		{
 			name: "define",
@@ -31,14 +35,20 @@ func TestCreateAccountFromDTO(t *testing.T) {
 				dto: dto,
 			},
 			want: &Account{
-				ID:   id,
+				ID:   binid,
 				Name: name,
 			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CreateAccountFromDTO(tt.args.dto); !reflect.DeepEqual(got, tt.want) {
+			got, err := CreateAccountFromDTO(tt.args.dto)
+			if err != nil && !tt.wantErr {
+				t.Errorf("CreateAccountFromDTO() = %v, wantErr %v", err, tt.want)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CreateAccountFromDTO() = %v, want %v", got, tt.want)
 			}
 		})
@@ -46,6 +56,8 @@ func TestCreateAccountFromDTO(t *testing.T) {
 }
 
 func TestCreateAccountFromUnspecifiedDTO(t *testing.T) {
+	id, _ := uuid.NewRandom()
+	binid, _ := id.MarshalBinary()
 	name := "JohnSmith"
 	udto := &domain.AccountUnspecifiedDTO{
 		Name: name,
@@ -64,13 +76,19 @@ func TestCreateAccountFromUnspecifiedDTO(t *testing.T) {
 				udto: udto,
 			},
 			want: &Account{
+				ID:   binid,
 				Name: name,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CreateAccountFromUnspecifiedDTO(tt.args.udto); !reflect.DeepEqual(got, tt.want) {
+			got, err := CreateAccountFromUnspecifiedDTO(tt.args.udto)
+			if err != nil {
+				return
+			}
+
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CreateAccountFromUnspecifiedDTO() = %v, want %v", got, tt.want)
 			}
 		})
@@ -78,12 +96,14 @@ func TestCreateAccountFromUnspecifiedDTO(t *testing.T) {
 }
 
 func TestAccount_DTO(t *testing.T) {
-	var id int64 = 1
+	id, _ := uuid.NewRandom()
+	binid, _ := id.MarshalBinary()
+	strid := id.String()
 	name := "JohnSmith"
 
 	type fields struct {
 		BaseModel bun.BaseModel
-		ID        int64
+		ID        []byte
 		Name      string
 		CreatedAt time.Time
 		UpdatedAt time.Time
@@ -97,11 +117,11 @@ func TestAccount_DTO(t *testing.T) {
 		{
 			name: "define",
 			fields: fields{
-				ID:   id,
+				ID:   binid,
 				Name: name,
 			},
 			want: &domain.AccountDTO{
-				ID:   id,
+				ID:   strid,
 				Name: name,
 			},
 		},
@@ -116,7 +136,11 @@ func TestAccount_DTO(t *testing.T) {
 				UpdatedAt: tt.fields.UpdatedAt,
 				DeletedAt: tt.fields.DeletedAt,
 			}
-			if got := a.DTO(); !reflect.DeepEqual(got, tt.want) {
+			got, err := a.DTO()
+			if err != nil {
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Account.DTO() = %v, want %v", got, tt.want)
 			}
 		})

@@ -18,13 +18,13 @@ type ServerInterface interface {
 	PostAccount(ctx echo.Context) error
 	// Delete account by id
 	// (DELETE /account/{id})
-	DeleteAccount(ctx echo.Context, id int64) error
+	DeleteAccount(ctx echo.Context, id string) error
 	// Returns account by id
 	// (GET /account/{id})
-	GetAccount(ctx echo.Context, id int64) error
+	GetAccount(ctx echo.Context, id string) error
 	// Update account by id
 	// (PUT /account/{id})
-	PutAccount(ctx echo.Context, id int64) error
+	PutAccount(ctx echo.Context, id string) error
 	// signin
 	// (POST /auth/signin)
 	PostSignin(ctx echo.Context) error
@@ -51,7 +51,7 @@ func (w *ServerInterfaceWrapper) PostAccount(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) DeleteAccount(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "id" -------------
-	var id int64
+	var id string
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, ctx.Param("id"), &id)
 	if err != nil {
@@ -67,7 +67,7 @@ func (w *ServerInterfaceWrapper) DeleteAccount(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) GetAccount(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "id" -------------
-	var id int64
+	var id string
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, ctx.Param("id"), &id)
 	if err != nil {
@@ -83,7 +83,7 @@ func (w *ServerInterfaceWrapper) GetAccount(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) PutAccount(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "id" -------------
-	var id int64
+	var id string
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, ctx.Param("id"), &id)
 	if err != nil {

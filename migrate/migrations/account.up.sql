@@ -1,5 +1,5 @@
 CREATE TABLE db.accounts (
-  id bigint PRIMARY KEY
+  id binary(16) PRIMARY KEY
   name varchar(255) NOT NULL
   created_at time NOT NULL DEFAULT CURRENT_TIMESTAMP()
   updated_at time NOT NULL DEFAULT CURRENT_TIMESTAMP()
@@ -9,4 +9,4 @@ CREATE TABLE db.accounts (
 --bun:split
 
 /*For Unit Test*/
-INSERT INTO db.account (:name) VALUES ("JohnSmith");
+INSERT INTO db.account (:id, :name) VALUES (UUID_TO_BIN("dummy",1), "JohnSmith");

@@ -7,7 +7,7 @@ func NewAuthUsecase() *AuthUsecase {
 }
 
 type SigninInput struct {
-	ID   int64
+	ID   string
 	Pass string
 }
 

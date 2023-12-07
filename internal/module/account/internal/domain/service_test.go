@@ -40,7 +40,7 @@ func TestNewAccountService(t *testing.T) {
 
 func TestAccountService_Get(t *testing.T) {
 	repo := NewMockiAccountRepository(gomock.NewController(t))
-	var id int64 = 1
+	id := "uuid"
 	name := "JohnSmith"
 	dto := &AccountDTO{
 		ID:   id,
@@ -56,7 +56,7 @@ func TestAccountService_Get(t *testing.T) {
 		repo iAccountRepository
 	}
 	type args struct {
-		id int64
+		id string
 	}
 	tests := []struct {
 		name    string
@@ -127,7 +127,7 @@ func TestAccountService_Get(t *testing.T) {
 
 func TestAccountService_Create(t *testing.T) {
 	repo := NewMockiAccountRepository(gomock.NewController(t))
-	var id int64 = 1
+	id := "uuid"
 	name := "JohnSmith"
 	udto := &AccountUnspecifiedDTO{
 		Name: name,
@@ -217,7 +217,7 @@ func TestAccountService_Create(t *testing.T) {
 
 func TestAccountService_Update(t *testing.T) {
 	repo := NewMockiAccountRepository(gomock.NewController(t))
-	var id int64 = 1
+	id := "uuid"
 	name := "JohnSmith"
 	dto := &AccountDTO{
 		ID:   id,
@@ -304,13 +304,13 @@ func TestAccountService_Update(t *testing.T) {
 
 func TestAccountService_Delete(t *testing.T) {
 	repo := NewMockiAccountRepository(gomock.NewController(t))
-	var id int64 = 1
+	id := "uuid"
 
 	type fields struct {
 		repo iAccountRepository
 	}
 	type args struct {
-		id int64
+		id string
 	}
 	tests := []struct {
 		name    string

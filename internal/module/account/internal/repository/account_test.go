@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 )
 
@@ -16,15 +17,19 @@ func TestAccountRepository_Get(t *testing.T) {
 	_, dbEnv, _, _ := env.NewReader().Read() //nolint
 	dbClient, _ := db.NewPool().Establish(dbEnv)
 
-	var idExists int64 = 1
-	nameExists := "JohnSmith"
-	var idNotExits int64 = 2
+	id, _ := uuid.NewRandom()
+	strid := id.String()
+
+	idNotExists, _ := uuid.NewRandom()
+	stridNotExists := idNotExists.String()
+
+	name := "JohnSmith"
 
 	type fields struct {
 		db bun.IDB
 	}
 	type args struct {
-		id int64
+		id string
 	}
 	tests := []struct {
 		name    string
@@ -39,11 +44,11 @@ func TestAccountRepository_Get(t *testing.T) {
 				db: dbClient,
 			},
 			args: args{
-				id: idExists,
+				id: strid,
 			},
 			want: &domain.AccountDTO{
-				ID:   idExists,
-				Name: nameExists,
+				ID:   strid,
+				Name: name,
 			},
 			wantErr: false,
 		},
@@ -53,7 +58,7 @@ func TestAccountRepository_Get(t *testing.T) {
 				db: dbClient,
 			},
 			args: args{
-				id: idNotExits,
+				id: stridNotExists,
 			},
 			want:    nil,
 			wantErr: true,
@@ -140,7 +145,7 @@ func TestAccountRepository_Delete(t *testing.T) {
 		db bun.IDB
 	}
 	type args struct {
-		id int64
+		id string
 	}
 	tests := []struct {
 		name    string

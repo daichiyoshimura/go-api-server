@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewAccountEntity(t *testing.T) {
-	var id int64 = 1
+	id := "uuid"
 	name := "JohnSmith"
 	accountName, _ := value.NewAccountName(name)
 
@@ -61,12 +61,12 @@ func TestNewAccountEntity(t *testing.T) {
 }
 
 func TestAccountEntity_DTO(t *testing.T) {
-	var id int64 = 1
+	id := "uuid"
 	name := "JohnSmith"
 	accountName, _ := value.NewAccountName(name)
 
 	type fields struct {
-		id   int64
+		id   string
 		name *value.AccountName
 	}
 	tests := []struct {

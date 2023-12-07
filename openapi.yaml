@@ -52,8 +52,7 @@ paths:
           description: ID of account to fetch
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: account response
@@ -85,8 +84,7 @@ paths:
           description: ID of account to fetch
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: account response
@@ -111,8 +109,7 @@ paths:
           description: ID of account to fetch
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: no content
@@ -156,8 +153,7 @@ components:
             - id
           properties:
             id:
-              type: integer
-              format: int64
+              type: string
               description: Unique id of the account
     NewAccount:
       required:
@@ -172,8 +168,7 @@ components:
         - pass
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
         pass:
           type: string
     SigninResponse:

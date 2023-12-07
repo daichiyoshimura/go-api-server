@@ -14,7 +14,7 @@ func NewAccountService(repo iAccountRepository) *AccountService {
 	}
 }
 
-func (s *AccountService) Get(id int64) (*AccountEntity, error) {
+func (s *AccountService) Get(id string) (*AccountEntity, error) {
 	acDTO, err := s.repo.Get(id)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -56,7 +56,7 @@ func (s *AccountService) Update(dto *AccountDTO) (*AccountEntity, error) {
 	return ac, nil
 }
 
-func (s *AccountService) Delete(id int64) error {
+func (s *AccountService) Delete(id string) error {
 	if err := s.repo.Delete(id); err != nil {
 		return errors.WithStack(err)
 	}
