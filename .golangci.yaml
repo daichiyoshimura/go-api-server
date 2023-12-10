@@ -25,12 +25,14 @@ linters:
     - wsl
     - testpackage
     - nlreturn
+run:
+  skip-dirs:
+    - ".*\\/migrate"
+    - ".*\\/migrations"
   skip-files:
-    - ".*\\_gen\\.go"
-    - ".*\\_test\\.go"
-    - ".*\\_mock\\.go"
-    - ".*\\/migrate\\/main\\.go"
-    - ".*\\/migrate\\/migration\\/.*\\.go"
+    - ".*_gen\\.go$"
+    - ".*_test\\.go$"
+    - ".*_mock\\.go$"
 linters-settings:
   wrapcheck:
     ignoreSigs:

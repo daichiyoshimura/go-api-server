@@ -34,7 +34,7 @@ func TestReader_Read(t *testing.T) {
 		name    string
 		want    *Server
 		want1   *DB
-		want2	*JWT
+		want2   *JWT
 		wantErr bool
 	}{
 		{
@@ -42,7 +42,7 @@ func TestReader_Read(t *testing.T) {
 			name:    "invalid STAGE",
 			want:    nil,
 			want1:   nil,
-			want2:	 nil,
+			want2:   nil,
 			wantErr: true,
 		},
 		{

@@ -6,7 +6,9 @@ require github.com/uptrace/bun/dialect/mysqldialect v1.1.16
 
 require (
 	github.com/cockroachdb/errors v1.11.1
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.5.1
+	github.com/labstack/echo-jwt/v4 v4.2.0
 )
 
 require (
@@ -16,11 +18,9 @@ require (
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/getsentry/sentry-go v0.18.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/labstack/echo-jwt/v4 v4.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
@@ -30,7 +30,7 @@ require (
 
 require (
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
-	github.com/google/uuid v1.4.0 // indirect
+	github.com/google/uuid v1.4.0
 	github.com/oapi-codegen/runtime v1.0.0
 )
 

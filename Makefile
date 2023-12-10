@@ -36,4 +36,3 @@ mockgen:
 	mockgen -source=${ACCOUNT_DIR}/iRepo.go -destination=${ACCOUNT_DIR}/Repo_mock.go -package=account -self_package=${APP_NAME}/${ACCOUNT_DIR}	
 	mockgen -source=${HANDLER_DIR}/iAccountUsecase.go -destination=${HANDLER_DIR}/accountUsecase_mock.go -package=handler -self_package=${APP_NAME}/${HANDLER_DIR}	
 	mockgen -source=${ACCOUNT_REPOSITORY_DIR}/model/iuuid.go -destination=${ACCOUNT_REPOSITORY_DIR}/model/uuid_mock.go -package=model -self_package=${APP_NAME}/${ACCOUNT_REPOSITORY_DIR}/model
-
