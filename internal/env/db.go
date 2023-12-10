@@ -20,7 +20,7 @@ func (r *Reader) db() (*DB, error) {
 		return nil, errors.Errorf(errMsgEnv, err)
 	}
 
-	instance, err := r.read("DB_INSTANCE")
+	name, err := r.read("DB_NAME")
 	if err != nil {
 		return nil, errors.Errorf(errMsgEnv, err)
 	}
@@ -29,7 +29,7 @@ func (r *Reader) db() (*DB, error) {
 		host:     host,
 		user:     user,
 		password: password,
-		instance: instance,
+		name:     name,
 	}, nil
 }
 
@@ -37,7 +37,7 @@ type DB struct {
 	host     string
 	user     string
 	password string
-	instance string
+	name     string
 }
 
 func (e *DB) Host() string {
@@ -52,6 +52,6 @@ func (e *DB) Password() string {
 	return e.password
 }
 
-func (e *DB) Instance() string {
-	return e.instance
+func (e *DB) Name() string {
+	return e.name
 }

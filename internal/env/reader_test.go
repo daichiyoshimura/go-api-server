@@ -55,7 +55,7 @@ func TestReader_Read(t *testing.T) {
 				host:     os.Getenv("DB_HOST"),
 				user:     os.Getenv("DB_USER"),
 				password: os.Getenv("DB_PASSWORD"),
-				instance: os.Getenv("DB_INSTANCE"),
+				name:     os.Getenv("DB_NAME"),
 			},
 			want2: &JWT{
 				secret: os.Getenv("JWT_SECRET"),

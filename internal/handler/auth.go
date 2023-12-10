@@ -62,7 +62,7 @@ func (h *AuthHandler) PostSignin(ctx echo.Context) error {
 
 	claims := jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Second * time.Duration(tokenExpirationLimit)).Unix(),
-		Id:        string(req.Id),
+		Id:        req.Id,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
