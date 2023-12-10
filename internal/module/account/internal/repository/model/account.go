@@ -12,8 +12,8 @@ import (
 )
 
 type Account struct {
-	bun.BaseModel `bun:"table:accounts"`
-	ID            []byte    `bun:"id,pk"`
+	bun.BaseModel `bun:"table:accounts,alias:ac"`
+	ID            []byte    `bun:"id,pk,type:binary(16)"`
 	Name          string    `bun:"name,notnull"`
 	CreatedAt     time.Time `bun:"created_at,nullzero,notnull,default:current_timestamp"`
 	UpdatedAt     time.Time `bun:"updated_at,nullzero,notnull,default:current_timestamp"`

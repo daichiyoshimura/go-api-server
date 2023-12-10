@@ -3,10 +3,9 @@ package main
 import (
 	"awsomeapp/internal/db"
 	"awsomeapp/internal/env"
-	"awsomeapp/migrate/migrations"
+	"awsomeapp/internal/module/account/internal/migrations"
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -44,7 +43,7 @@ func main() {
 		},
 	}
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 }
 

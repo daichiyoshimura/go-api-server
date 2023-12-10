@@ -29,8 +29,8 @@ linters:
     - ".*\\_gen\\.go"
     - ".*\\_test\\.go"
     - ".*\\_mock\\.go"
-    - "\\/migrate\\/main\\.go"
-    - "\\/migrate\\/migration\\/main\\.go"
+    - ".*\\/migrate\\/main\\.go"
+    - ".*\\/migrate\\/migration\\/.*\\.go"
 linters-settings:
   wrapcheck:
     ignoreSigs:

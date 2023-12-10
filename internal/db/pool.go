@@ -53,6 +53,7 @@ func (c *Pool) Establish(env IEnv) (*bun.DB, error) {
 	return bun.NewDB(db, mysqldialect.New()), nil
 }
 
+// TODO: use mysql.config
 func (c *Pool) dataSourceName(env IEnv) (string, error) {
 	parts := []string{
 		env.User(),
